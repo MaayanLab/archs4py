@@ -16,7 +16,7 @@ def meta_search(file, search_term, meta_fields=["geo_accession", "series_id", "c
     for field in meta_fields:
         if field in f["meta"]["samples"].keys():
             meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
-            idx.append([i for i, s in enumerate(meta) if (bool(re.search(search_term, s)))])
+            idx.extend([i for i, s in enumerate(meta) if (bool(re.search(search_term, s)))])
     f.close()
     idx = sorted(list(set(idx)))
     counts = get_counts(file, idx)
@@ -31,6 +31,8 @@ def get_random(file, number, seed=1):
     return get_counts(file, idx)
 
 def get_counts(file, sample_idx, gene_idx = []):
+    sample_idx = sorted(sample_idx)
+    gene_idx = sorted(gene_idx)
     f = h5.File(file, "r")
     genes = np.array([x.decode("UTF-8") for x in np.array(f["meta/genes/gene_symbol"])])
     gsm_ids = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])])[sample_idx]
