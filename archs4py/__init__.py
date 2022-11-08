@@ -36,7 +36,7 @@ def get_counts(file, sample_idx, gene_idx = []):
     gsm_ids = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])])[sample_idx]
     f.close()
     if len(gene_idx) == 0:
-        gene_idx = list(range(genes))
+        gene_idx = list(range(len(genes)))
     exp = []
     PROCESSES = 16
     with multiprocessing.Pool(PROCESSES) as pool:
