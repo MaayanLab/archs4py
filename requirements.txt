@@ -1,0 +1,6 @@
+h5py==3.7.0
+numpy==1.23.3
+pandas==1.5.0
+qnorm==0.8.1
+setuptools==58.0.4
+tdqm==0.0.1

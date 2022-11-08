@@ -1,4 +1,12 @@
 {
-    "LIBRARY_LIST_URL": "https://maayanlab.cloud/speedrichr/api/listlibs",
-    "LIBRARY_DOWNLOAD_URL": "https://maayanlab.cloud/Enrichr/geneSetLibrary?mode=text&libraryName="
+    "GENE_COUNTS_HUMAN": {
+        "latest": "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_human_v2.1.h5",
+        "2.1": "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_human_v2.1.h5",
+        "1.11": "https://s3.amazonaws.com/mssm-seq-matrix/human_matrix_v11.h5"
+    },
+    "GENE_COUNTS_MOUSE": {
+        "latest": "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_mouse_v2.1.h5",
+        "2.1": "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_mouse_v2.1.h5",
+        "1.11": "https://s3.amazonaws.com/mssm-seq-matrix/mouse_matrix_v11.h5"
+    }
 }
