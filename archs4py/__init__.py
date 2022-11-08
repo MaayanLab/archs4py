@@ -3,18 +3,12 @@ import pandas as pd
 from collections import Counter
 
 import h5py as h5
-import os
-import sys
-
-import json
-import time
-import tdqm
+import tqdm
 import re
 
 import qnorm
 import multiprocessing
 import random
-
 
 def meta_search(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
     f = h5.File(file, "r")
@@ -74,3 +68,4 @@ def normalize(counts, method="log_quantiles"):
         g = np.array(counts)
         norm_exp = np.abs(g/g.sum(axis=0))*1_000_000
     norm_exp = pd.DataFrame(norm_exp, index=counts.index, columns=counts.index, dtype=np.float32)
+    return norm_exp
