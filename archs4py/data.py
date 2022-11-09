@@ -26,13 +26,13 @@ def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characte
     counts = counts(file, idx)
     return counts
 
-def random(file, number, seed=1):
+def rand(file, number, seed=1):
     random.seed(seed)
     f = h5.File(file, "r")
     gsm_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
     f.close()
     idx = sorted(random.sample(range(len(gsm_ids)), number))
-    return counts(file, idx)
+    return index(file, idx)
 
 def series(file, series_id):
     f = h5.File(file, "r")
@@ -40,7 +40,7 @@ def series(file, series_id):
     f.close()
     idx = [i for i,x in enumerate(series) if x == series_id]
     if len(idx) > 0:
-        return counts(file, idx)
+        return index(file, idx)
 
 def samples(file, sample_ids):
     sample_ids = set(sample_ids)
@@ -49,7 +49,7 @@ def samples(file, sample_ids):
     f.close()
     idx = [i for i,x in enumerate(samples) if x in sample_ids]
     if len(idx) > 0:
-        return counts(file, idx)
+        return index(file, idx)
 
 def index(file, sample_idx, gene_idx = []):
     sample_idx = sorted(sample_idx)

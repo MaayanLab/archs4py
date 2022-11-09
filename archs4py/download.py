@@ -15,9 +15,11 @@ import wget
 
 import archs4py.utils
 
-def gene_counts(species, version="latest"):
+def gene_counts(species, path="", version="latest"):
     conf = archs4py.utils.get_config()
     try:
-        wget.download(conf["GENE_COUNTS_"+species.upper()][version]["primary"])
+        fpath = wget.download(conf["GENE_COUNTS_"+species.upper()][version]["primary"], path)
+        print("file downloaded to", fpath)
     except Exception:
-        wget.download(conf["GENE_COUNTS_"+species.upper()][version]["fallback"])
+        fpath = wget.download(conf["GENE_COUNTS_"+species.upper()][version]["fallback"], path)
+        print("file downloaded to", fpath)
