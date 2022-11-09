@@ -12,7 +12,7 @@ import random
 
 def meta_search(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
     search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
-    print("Searches for any occurrence of ", search_term, "as regular expression")
+    print("Searches for any occurrence of", search_term, "as regular expression")
     f = h5.File(file, "r")
     idx = []
     for field in meta_fields:
