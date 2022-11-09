@@ -11,12 +11,14 @@ import multiprocessing
 import random
 
 def meta_search(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
+    search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
+    print("Searches for any occurrence of ", search_term, "as regular expression")
     f = h5.File(file, "r")
     idx = []
     for field in meta_fields:
         if field in f["meta"]["samples"].keys():
             meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
-            idx.extend([i for i, s in enumerate(meta) if (bool(re.search(search_term, s)))])
+            idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
     f.close()
     idx = sorted(list(set(idx)))
     counts = get_counts(file, idx)
@@ -28,6 +30,13 @@ def get_random(file, number, seed=1):
     gsm_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
     f.close()
     idx = sorted(random.sample(range(len(gsm_ids)), number))
+    return get_counts(file, idx)
+
+def get_series(file, series_id):
+    f = h5.File(file, "r")
+    series = [x.decode("UTF-8") for x in np.array(f["meta/samples/series_id"])]
+    f.close()
+    idx = [i for i,x in enumerate(series) if x == series_id]
     return get_counts(file, idx)
 
 def get_counts(file, sample_idx, gene_idx = []):
@@ -71,3 +80,11 @@ def normalize(counts, method="log_quantiles"):
         norm_exp = np.abs(g/g.sum(axis=0))*1_000_000
     norm_exp = pd.DataFrame(norm_exp, index=counts.index, columns=counts.index, dtype=np.float32)
     return norm_exp
+
+def get_meta(file):
+    f = h5.File(file, "r")
+    meta = {}
+    for field in list(f["meta"]["samples"].keys()):
+        meta[field] = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
+    f.close()
+    return meta
