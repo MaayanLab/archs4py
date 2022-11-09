@@ -37,13 +37,16 @@ def get_series(file, series_id):
     series = [x.decode("UTF-8") for x in np.array(f["meta/samples/series_id"])]
     f.close()
     idx = [i for i,x in enumerate(series) if x == series_id]
-    return get_counts(file, idx)
+    if len(idx) > 0:
+        return get_counts(file, idx)
 
 def get_counts(file, sample_idx, gene_idx = []):
     sample_idx = sorted(sample_idx)
     gene_idx = sorted(gene_idx)
     f = h5.File(file, "r")
     genes = np.array([x.decode("UTF-8") for x in np.array(f["meta/genes/gene_symbol"])])
+    if len(sample_idx) == 0:
+        return pd.DataFrame(index=genes[gene_idx])
     gsm_ids = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])])[sample_idx]
     f.close()
     if len(gene_idx) == 0:
@@ -72,9 +75,9 @@ def get_sample(file, i, gene_idx):
 def normalize(counts, method="log_quantiles"):
     norm_exp = 0
     if method == "quantiles":
-        norm_exp = qnorm.normalize_quantiles(np.array(counts))
+        norm_exp = qnorm.quantile_normalize(np.array(counts))
     elif method == "log_quantiles":
-        norm_exp = qnorm.normalize_quantiles(np.log2(1+np.array(counts)))
+        norm_exp = qnorm.quantile_normalize(np.log2(1+np.array(counts)))
     elif method == "cpm":
         g = np.array(counts)
         norm_exp = np.abs(g/g.sum(axis=0))*1_000_000
