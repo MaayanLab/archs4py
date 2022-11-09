@@ -5,6 +5,8 @@ from collections import Counter
 import h5py as h5
 import tqdm
 import re
+import os
+import json
 
 import qnorm
 import multiprocessing
@@ -91,3 +93,16 @@ def get_meta(file):
         meta[field] = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
     f.close()
     return meta
+
+def get_config():
+    config_url = os.path.join(
+        os.path.dirname(__file__),
+        'data/config.json')
+    with open(config_url) as json_file:
+        data = json.load(json_file)
+    return(data)
+
+def list_versions():
+    config = get_config()
+    versions = config["GENE_COUNTS_HUMAN"].keys()
+    return versions
