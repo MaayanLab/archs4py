@@ -12,15 +12,6 @@ import qnorm
 import multiprocessing
 import random
 
-import archs4py.data
-import archs4py.download
-import archs4py.meta
-
-import importlib
-importlib.reload(archs4py.data)
-importlib.reload(archs4py.download)
-importlib.reload(archs4py.meta)
-
 def meta_search(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
     search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
     print("Searches for any occurrence of", search_term, "as regular expression")
@@ -102,17 +93,3 @@ def get_meta(file):
         meta[field] = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
     f.close()
     return meta
-
-def get_config():
-    config_url = os.path.join(
-        os.path.dirname(__file__),
-        'data/config.json')
-    with open(config_url) as json_file:
-        data = json.load(json_file)
-    return(data)
-
-def list_versions():
-    config = get_config()
-    versions = config["GENE_COUNTS_HUMAN"].keys()
-    return versions
-
