@@ -81,7 +81,7 @@ def normalize(counts, method="log_quantiles"):
     elif method == "cpm":
         g = np.array(counts)
         norm_exp = np.abs(g/g.sum(axis=0))*1_000_000
-    norm_exp = pd.DataFrame(norm_exp, index=counts.index, columns=counts.index, dtype=np.float32)
+    norm_exp = pd.DataFrame(norm_exp, index=counts.index, columns=counts.columns, dtype=np.float32)
     return norm_exp
 
 def get_meta(file):
