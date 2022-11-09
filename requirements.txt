@@ -4,3 +4,4 @@ pandas==1.5.0
 qnorm==0.8.1
 setuptools==58.0.4
 tqdm==4.64.1
+wget==3.2
