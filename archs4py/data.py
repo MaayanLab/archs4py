@@ -64,9 +64,9 @@ def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "ch
 def rand(file, number, seed=1):
     random.seed(seed)
     if file.startswith("http"):
-        return rand_remote(file, search_term, meta_fields)
+        return rand_remote(file, number)
     else:
-        return rand_local(file, search_term, meta_fields)
+        return rand_local(file, number)
 
 def rand_local(file, number):
     f = h5.File(file, "r")
