@@ -26,7 +26,7 @@ def fetch_meta_remote(field, s3_url, endpoint):
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
     with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
         meta = [x.decode("UTF-8") for x in list(np.array(f[field]))]
-    return meta
+    return np.array(meta)
 
 def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
     search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
@@ -130,8 +130,8 @@ def index_remote(url, sample_idx, gene_idx = []):
     gene_idx = sorted(gene_idx)
     genes = fetch_meta_remote("meta/genes/gene_symbol", s3_url, endpoint)
     if len(gene_idx) == 0:
-        gene_idx = list(range(len(genes)))
-    gsm_ids = fetch_meta_remote("meta/genes/gene_symbol", s3_url, endpoint)[sample_idx]
+        gene_idx = np.array(list(range(len(genes))))
+    gsm_ids = fetch_meta_remote("meta/samples/geo_accession", s3_url, endpoint)[sample_idx]
     exp = []
     PROCESSES = 16
     with multiprocessing.Pool(PROCESSES) as pool:
