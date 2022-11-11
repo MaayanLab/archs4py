@@ -36,16 +36,34 @@ file = "archs4_gene_human_v2.1.2.h5"
 pos_counts = a4.data.index(file, [0,1,2,3,4])
 
 # extract 100 random samples
-rand_counts = a4.data.rand(file, 100)
+# filterSingle=True will only retrieve bulk gene expression
+rand_counts = a4.data.rand(file, 100, filterSingle=False)
 
 # search and extract samples matching regex (ignores whitespaces)
-meta_counts = a4.data.meta(file, "myoblast")
+# filterSingle=True will only retrieve bulk gene expression
+meta_counts = a4.data.meta(file, "myoblast", filterSingle=False)
 
 # get samples of specified series
 series_counts = a4.data.series(file, "GSE150819")
 
 #get sample counts
 sample_counts = a4.data.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
+
+```
+
+### Direct access from S3
+
+Gene expression can be loaded directly from S3 without downloading the complete file. This is very slow and will only work for few samples at a time. Instead of passing a file path pass the URL in S3.
+
+```python
+import archs4py as a4
+
+#path to file
+url = "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_human_v2.1.2.h5"
+
+# extract 100 random samples
+# filterSingle=True will only retrieve bulk gene expression
+rand_counts = a4.data.rand(url, 100, filterSingle=False)
 
 ```
 
