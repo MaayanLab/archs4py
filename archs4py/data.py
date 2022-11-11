@@ -193,7 +193,6 @@ def index_remote(url, sample_idx, gene_idx = []):
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
     with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
         exp = np.array(f["data/expression"][:,np.array(sample_idx)], dtype=np.uint32)[gene_idx]
-    exp = np.array(exp).T
     exp = pd.DataFrame(exp, index=genes[gene_idx], columns=gsm_ids, dtype=np.uint32)
     return exp
 
