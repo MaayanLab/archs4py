@@ -28,27 +28,32 @@ def fetch_meta_remote(field, s3_url, endpoint):
         meta = [x.decode("UTF-8") for x in list(np.array(f[field]))]
     return np.array(meta)
 
-def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
+def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"],  filterSingle=False):
     search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
     print("Searches for any occurrence of", search_term, "as regular expression")
     if file.startswith("http"):
-        return meta_remote(file, search_term, meta_fields)
+        return meta_remote(file, search_term, meta_fields, filterSingle)
     else:
-        return meta_local(file, search_term, meta_fields)
+        return meta_local(file, search_term, meta_fields, filterSingle)
 
-def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
+def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle):
     f = h5.File(file, "r")
     idx = []
     for field in meta_fields:
         if field in f["meta"]["samples"].keys():
             meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
             idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
+    if filterSingle:
+        singleprob = np.where(np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])]) < 0.5)[0]
     f.close()
-    idx = sorted(list(set(idx)))
+    if singleProb:
+        idx = sorted(list(set(idx).intersection(set(singleprob))))
+    else:
+        idx = sorted(list(set(idx)))
     counts = index(file, idx)
     return counts
 
-def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]):
+def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle):
     s3_url, endpoint = resolve_url(url)
     idx = []
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
@@ -57,33 +62,54 @@ def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "ch
             if field in f["meta"]["samples"].keys():
                 meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
                 idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
-    idx = sorted(list(set(idx)))
+        if filterSingle:
+            singleprob = np.where(np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])]) < 0.5)[0]
+    if singleProb:
+        idx = sorted(list(set(idx).intersection(set(singleprob))))
+    else:
+        idx = sorted(list(set(idx)))
     counts = index_remote(url, idx)
     return counts
 
-def rand(file, number, seed=1):
+def rand(file, number, seed=1, filterSingle=False):
     random.seed(seed)
     if file.startswith("http"):
-        return rand_remote(file, number)
+        return rand_remote(file, number, filterSingle)
     else:
-        return rand_local(file, number)
+        return rand_local(file, number, filterSingle)
 
-def rand_local(file, number):
+def rand_local(file, number, filterSingle):
     f = h5.File(file, "r")
     gsm_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
+    if filterSingle:
+        singleprob = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])])
     f.close()
-    idx = sorted(random.sample(range(len(gsm_ids)), number))
+    if filterSingle:
+        idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
+    else:
+        idx = sorted(random.sample(range(len(gsm_ids)), number))
     return index(file, idx)
 
-def rand_remote(url, number):
+def rand_remote(url, number, filterSingle):
     s3_url, endpoint = resolve_url(url)
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
     with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
         number_samples = len(f["meta/samples/geo_accession"])
-    idx = sorted(random.sample(range(number_samples), number))
+        if filterSingle:
+            singleprob = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])])
+     if filterSingle:
+        idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
+    else:
+        idx = sorted(random.sample(range(number_samples), number))
     return index_remote(url, idx)
 
 def series(file, series_id):
+    if file.startswith("http"):
+        return series_remote(file, series_id)
+    else:
+        return series_local(file, series_id)
+
+def series_local(file, series_id):
     f = h5.File(file, "r")
     series = [x.decode("UTF-8") for x in np.array(f["meta/samples/series_id"])]
     f.close()
@@ -91,7 +117,22 @@ def series(file, series_id):
     if len(idx) > 0:
         return index(file, idx)
 
+def series_remote(url, series_id):
+    s3_url, endpoint = resolve_url(url)
+    s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
+    with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
+        series = [x.decode("UTF-8") for x in np.array(f["meta/samples/series_id"])]
+    idx = [i for i,x in enumerate(series) if x == series_id]
+    if len(idx) > 0:
+        return index_remote(url, idx)
+
 def samples(file, sample_ids):
+    if file.startswith("http"):
+        return samples_remote(file, sample_ids)
+    else:
+        return samples_local(file, sample_ids)
+
+def samples_local(file, sample_ids):
     sample_ids = set(sample_ids)
     f = h5.File(file, "r")
     samples = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
@@ -99,6 +140,16 @@ def samples(file, sample_ids):
     idx = [i for i,x in enumerate(samples) if x in sample_ids]
     if len(idx) > 0:
         return index(file, idx)
+
+def samples_remote(url, sample_ids):
+    sample_ids = set(sample_ids)
+    s3_url, endpoint = resolve_url(url)
+    s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
+    with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
+        sample_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
+    idx = [i for i,x in enumerate(samples) if x in sample_ids]
+    if len(idx) > 0:
+        return index_remote(url, idx)
 
 def index(file, sample_idx, gene_idx = []):
     sample_idx = sorted(sample_idx)
@@ -133,7 +184,7 @@ def index_remote(url, sample_idx, gene_idx = []):
         gene_idx = np.array(list(range(len(genes))))
     gsm_ids = fetch_meta_remote("meta/samples/geo_accession", s3_url, endpoint)[sample_idx]
     exp = []
-    PROCESSES = 16
+    PROCESSES = 4
     with multiprocessing.Pool(PROCESSES) as pool:
         results = [pool.apply_async(get_sample_remote, (s3_url, endpoint, i, gene_idx)) for i in sample_idx]
         for r in tqdm.tqdm(results):
