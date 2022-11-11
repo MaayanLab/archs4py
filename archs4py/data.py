@@ -36,7 +36,7 @@ def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characte
     else:
         return meta_local(file, search_term, meta_fields, filterSingle)
 
-def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle):
+def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle=False):
     f = h5.File(file, "r")
     idx = []
     for field in meta_fields:
@@ -46,14 +46,14 @@ def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "ch
     if filterSingle:
         singleprob = np.where(np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])]) < 0.5)[0]
     f.close()
-    if singleProb:
+    if filterSingle:
         idx = sorted(list(set(idx).intersection(set(singleprob))))
     else:
         idx = sorted(list(set(idx)))
     counts = index(file, idx)
     return counts
 
-def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle):
+def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle=False):
     s3_url, endpoint = resolve_url(url)
     idx = []
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
@@ -64,7 +64,7 @@ def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "ch
                 idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
         if filterSingle:
             singleprob = np.where(np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])]) < 0.5)[0]
-    if singleProb:
+    if filterSingle:
         idx = sorted(list(set(idx).intersection(set(singleprob))))
     else:
         idx = sorted(list(set(idx)))
