@@ -85,7 +85,7 @@ def rand_local(file, number, filterSingle):
         singleprob = np.array(f["meta/samples/singlecellprobability"])
     f.close()
     if filterSingle:
-        idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
+        idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(len(gsm_ids)), number))
     return index(file, idx)
@@ -98,7 +98,7 @@ def rand_remote(url, number, filterSingle):
         if filterSingle:
             singleprob = np.array(f["meta/samples/singlecellprobability"])
     if filterSingle:
-        idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
+        idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(number_samples), number))
     return index_remote(url, idx)
