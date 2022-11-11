@@ -88,6 +88,7 @@ def rand_local(file, number, filterSingle):
         idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(len(gsm_ids)), number))
+    print(idx)
     return index(file, idx)
 
 def rand_remote(url, number, filterSingle):
