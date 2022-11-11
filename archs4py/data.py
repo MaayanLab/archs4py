@@ -88,7 +88,6 @@ def rand_local(file, number, filterSingle):
         idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(len(gsm_ids)), number))
-    print(idx)
     return index(file, idx)
 
 def rand_remote(url, number, filterSingle):
@@ -185,7 +184,7 @@ def index_remote(url, sample_idx, gene_idx = []):
         gene_idx = np.array(list(range(len(genes))))
     gsm_ids = fetch_meta_remote("meta/samples/geo_accession", s3_url, endpoint)[sample_idx]
     exp = []
-    PROCESSES = 4
+    PROCESSES = 16
     with multiprocessing.Pool(PROCESSES) as pool:
         results = [pool.apply_async(get_sample_remote, (s3_url, endpoint, i, gene_idx)) for i in sample_idx]
         for r in tqdm.tqdm(results):
