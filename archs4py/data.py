@@ -44,7 +44,7 @@ def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "ch
             meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
             idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
     if filterSingle:
-        singleprob = np.where(np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])]) < 0.5)[0]
+        singleprob = np.where(np.array(f["meta/samples/singlecellprobability"]) < 0.5)[0]
     f.close()
     if filterSingle:
         idx = sorted(list(set(idx).intersection(set(singleprob))))
@@ -63,7 +63,7 @@ def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "ch
                 meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
                 idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
         if filterSingle:
-            singleprob = np.where(np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])]) < 0.5)[0]
+            singleprob = np.where(np.array(f["meta/samples/singlecellprobability"]) < 0.5)[0]
     if filterSingle:
         idx = sorted(list(set(idx).intersection(set(singleprob))))
     else:
@@ -82,7 +82,7 @@ def rand_local(file, number, filterSingle):
     f = h5.File(file, "r")
     gsm_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
     if filterSingle:
-        singleprob = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])])
+        singleprob = np.array(f["meta/samples/singlecellprobability"])
     f.close()
     if filterSingle:
         idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
@@ -96,7 +96,7 @@ def rand_remote(url, number, filterSingle):
     with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
         number_samples = len(f["meta/samples/geo_accession"])
         if filterSingle:
-            singleprob = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])])
+            singleprob = np.array(f["meta/samples/singlecellprobability"])
     if filterSingle:
         idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
     else:
