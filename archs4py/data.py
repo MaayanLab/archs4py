@@ -183,13 +183,16 @@ def index_remote(url, sample_idx, gene_idx = []):
     if len(gene_idx) == 0:
         gene_idx = np.array(list(range(len(genes))))
     gsm_ids = fetch_meta_remote("meta/samples/geo_accession", s3_url, endpoint)[sample_idx]
-    exp = []
-    PROCESSES = 1
-    with multiprocessing.Pool(PROCESSES) as pool:
-        results = [pool.apply_async(get_sample_remote, (s3_url, endpoint, i, gene_idx)) for i in sample_idx]
-        for r in tqdm.tqdm(results):
-            res = r.get()
-            exp.append(res)
+    #exp = []
+    #PROCESSES = 1
+    #with multiprocessing.Pool(PROCESSES) as pool:
+    #    results = [pool.apply_async(get_sample_remote, (s3_url, endpoint, i, gene_idx)) for i in sample_idx]
+    #    for r in tqdm.tqdm(results):
+    #        res = r.get()
+    #        exp.append(res)
+    s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
+    with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
+        exp = np.array(f["data/expression"][:,np.array(sample_idx)], dtype=np.uint32)[gene_idx]
     exp = np.array(exp).T
     exp = pd.DataFrame(exp, index=genes[gene_idx], columns=gsm_ids, dtype=np.uint32)
     return exp
