@@ -97,8 +97,8 @@ def rand_remote(url, number, filterSingle):
         number_samples = len(f["meta/samples/geo_accession"])
         if filterSingle:
             singleprob = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/singlecellprobability"])])
-        if filterSingle:
-            idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
+    if filterSingle:
+        idx = sorted(random.sample(np.where(singleprob < 0.5)[0], number))
     else:
         idx = sorted(random.sample(range(number_samples), number))
     return index_remote(url, idx)
