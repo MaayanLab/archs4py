@@ -151,7 +151,7 @@ def samples_remote(url, sample_ids):
     if len(idx) > 0:
         return index_remote(url, idx)
 
-def index(file, sample_idx, gene_idx = []):
+def index(file, sample_idx, gene_idx = [], silent=False):
     sample_idx = sorted(sample_idx)
     gene_idx = sorted(gene_idx)
     f = h5.File(file, "r")
@@ -166,7 +166,7 @@ def index(file, sample_idx, gene_idx = []):
     PROCESSES = 16
     with multiprocessing.Pool(PROCESSES) as pool:
         results = [pool.apply_async(get_sample, (file, i, gene_idx)) for i in sample_idx]
-        for r in tqdm.tqdm(results):
+        for r in tqdm.tqdm(results, disable=silent):
             res = r.get()
             exp.append(res)
     exp = np.array(exp).T
