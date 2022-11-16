@@ -19,3 +19,9 @@ def get_meta(file):
         meta[field] = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
     f.close()
     return meta
+
+def get_meta_sample_field(file, field):
+    f = h5.File(file, "r")
+    meta_data = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
+    f.close()
+    return meta_data
