@@ -30,7 +30,7 @@ archs4py supports several ways to load gene expression data. When querying ARCHS
 import archs4py as a4
 
 #path to file
-file = "archs4_gene_human_v2.1.2.h5"
+file = "human_gene_v2.2.h5"
 
 # get counts for samples at position [0,1,2,3,4]
 pos_counts = a4.data.index(file, [0,1,2,3,4])
@@ -59,7 +59,7 @@ Gene expression can be loaded directly from S3 without downloading the complete 
 import archs4py as a4
 
 #path to file
-url = "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_human_v2.1.2.h5"
+url = "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.2.h5"
 
 # extract 100 random samples
 # filterSingle=True will only retrieve bulk gene expression
