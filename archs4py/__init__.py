@@ -53,6 +53,6 @@ def get_config():
 
 def versions():
     config = get_config()
-    versions = config["GENE_COUNTS_HUMAN"].keys()
+    versions = config["GENE_COUNTS"]["HUMAN"].keys()
     return versions
 

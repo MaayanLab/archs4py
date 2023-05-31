@@ -154,8 +154,9 @@ def samples_remote(url, sample_ids):
 def index(file, sample_idx, gene_idx = [], silent=False):
     sample_idx = sorted(sample_idx)
     gene_idx = sorted(gene_idx)
+    row_encoding = get_encoding(file)
     f = h5.File(file, "r")
-    genes = np.array([x.decode("UTF-8") for x in np.array(f["meta/genes/gene_symbol"])])
+    genes = np.array([x.decode("UTF-8") for x in np.array(f[row_encoding])])
     if len(sample_idx) == 0:
         return pd.DataFrame(index=genes[gene_idx])
     gsm_ids = np.array([x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])])[sample_idx]
@@ -179,18 +180,12 @@ def index_remote(url, sample_idx, gene_idx = []):
     s3_url, endpoint = resolve_url(url)
     sample_idx = sorted(sample_idx)
     gene_idx = sorted(gene_idx)
-    genes = fetch_meta_remote("meta/genes/gene_symbol", s3_url, endpoint)
+    s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
+    row_encoding = get_encoding_remote(url)
+    genes = fetch_meta_remote(row_encoding, s3_url, endpoint)
     if len(gene_idx) == 0:
         gene_idx = np.array(list(range(len(genes))))
     gsm_ids = fetch_meta_remote("meta/samples/geo_accession", s3_url, endpoint)[sample_idx]
-    #exp = []
-    #PROCESSES = 1
-    #with multiprocessing.Pool(PROCESSES) as pool:
-    #    results = [pool.apply_async(get_sample_remote, (s3_url, endpoint, i, gene_idx)) for i in sample_idx]
-    #    for r in tqdm.tqdm(results):
-    #        res = r.get()
-    #        exp.append(res)
-    s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
     with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
         exp = np.array(f["data/expression"][:,np.array(sample_idx)], dtype=np.uint32)[gene_idx]
     exp = pd.DataFrame(exp, index=genes[gene_idx], columns=gsm_ids, dtype=np.uint32)
@@ -215,3 +210,29 @@ def get_sample_remote(s3_url, endpoint, i, gene_idx):
     except Exception:
         dd = np.array([0]*len(gene_idx))
         return dd
+
+def get_encoding(file):
+    with h5.File(file) as f:
+        if "genes" in list(f["meta"].keys()):
+            if "gene_symbol" in list(f["meta/genes"].keys()):
+                return "meta/genes/gene_symbol"
+            elif "symbol" in list(f["meta/genes"].keys()):
+                return "meta/genes/symbol"
+        elif "transcripts" in list(f["meta"].keys()):
+            if "ensembl_id" in list(f["meta/trancripts"].keys()):
+                return "meta/trancripts/ensembl_id"
+        else:
+            raise Exception("error in gene/transcript meta data")
+
+def get_encoding_remote(s3, s3_url):
+    with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
+        if "genes" in list(f["meta"].keys()):
+            if "gene_symbol" in list(f["meta/genes"].keys()):
+                return "meta/genes/gene_symbol"
+            elif "symbol" in list(f["meta/genes"].keys()):
+                return "meta/gene_symbol"
+        elif "transcripts" in list(f["meta"].keys()):
+            if "ensembl_id" in list(f["meta/trancripts"].keys()):
+                return "meta/trancripts/ensembl_id"
+        else:
+            raise Exception("error in gene/transcript meta data")
