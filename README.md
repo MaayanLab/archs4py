@@ -19,7 +19,7 @@ pip3 install git+https://github.com/MaayanLab/archs4py.git
 The data is stored in large H5 files which first need to be downloaded. There are separate files for `human` and `mouse` data. The Supported files are `gene counts` and `transcript counts`.
 
 ```python
-import archs4 as a4
+import archs4py as a4
 
 file_path = a4.download.counts("human", path="", version="latest")
 ```
