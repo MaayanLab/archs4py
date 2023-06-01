@@ -16,12 +16,12 @@ pip3 install git+https://github.com/MaayanLab/archs4py.git
 
 ### Download data file
 
-The data is stored in a large H5 file which first needs to be downloaded.
+The data is stored in large H5 files which first need to be downloaded. There are separate files for `human` and `mouse` data. 
 
 ```python
 import archs4 as a4
 
-file_path = a4.download.gene_counts("human", path="", version="latest")
+file_path = a4.download.counts("human", path="", version="latest")
 ```
 
 ### Data access
