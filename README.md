@@ -1,4 +1,4 @@
-![archs-42](https://github.com/MaayanLab/archs4py/assets/32603869/a99ca725-6f10-4e01-85c1-3c1e1694dc68)
+<img title="archs4py" alt="archs4py" src="https://github-production-user-asset-6210df.s3.amazonaws.com/32603869/242734021-a99ca725-6f10-4e01-85c1-3c1e1694dc68.png">
 
 # archs4py - Official Python package to load and query ARCHS4 data
 
