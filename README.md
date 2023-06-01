@@ -1,4 +1,4 @@
-# archs4py - Python package to load and query ARCHS4 data
+# archs4py - Official Python package to load and query ARCHS4 data
 
 Official ARCHS4 compagnion package. This package is a wrapper for basic H5 commands performed on the ARCHS4 data files. Some of the data access is optimized for specific query strategies and should make this implementation faster than manually querying the data. The package supports automated file download, mutithreading, and some convenience functions such as data normalization.
 
