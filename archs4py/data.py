@@ -1,15 +1,11 @@
 import numpy as np
 import pandas as pd
-from collections import Counter
 
 import h5py as h5
 import s3fs
 import tqdm
 import re
-import os
-import json
 
-import qnorm
 import multiprocessing
 import random
 
@@ -28,32 +24,47 @@ def fetch_meta_remote(field, s3_url, endpoint):
         meta = [x.decode("UTF-8") for x in list(np.array(f[field]))]
     return np.array(meta)
 
-def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"],  filterSingle=False):
+def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"],  remove_sc=False, silent=False):
+    """
+    Search for samples in a file based on a search term in specified metadata fields.
+
+    Args:
+        file (str): The file path or object containing the data.
+        search_term (str): The term to search for. The search is case-insensitive and supports regular expressions.
+        meta_fields (list, optional): The list of metadata fields to search within.
+            Defaults to ["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"].
+        remove_sc (bool, optional): Whether to filter single-cell samples from the results.
+            Defaults to False.
+        silent (bool, optional): Print progress bar.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the gene expression data for the matching samples.
+    """
     search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
     print("Searches for any occurrence of", search_term, "as regular expression")
     if file.startswith("http"):
-        return meta_remote(file, search_term, meta_fields, filterSingle)
+        return meta_remote(file, search_term, meta_fields, remove_sc, silent)
     else:
-        return meta_local(file, search_term, meta_fields, filterSingle)
+        return meta_local(file, search_term, meta_fields, remove_sc, silent)
 
-def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle=False):
+def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], remove_sc=False, silent=False):
     f = h5.File(file, "r")
     idx = []
     for field in meta_fields:
         if field in f["meta"]["samples"].keys():
             meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
             idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
-    if filterSingle:
+    if remove_sc:
         singleprob = np.where(np.array(f["meta/samples/singlecellprobability"]) < 0.5)[0]
     f.close()
-    if filterSingle:
+    if remove_sc:
         idx = sorted(list(set(idx).intersection(set(singleprob))))
     else:
         idx = sorted(list(set(idx)))
     counts = index(file, idx)
     return counts
 
-def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], filterSingle=False):
+def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], remove_sc=False, silent=False):
     s3_url, endpoint = resolve_url(url)
     idx = []
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
@@ -62,86 +73,109 @@ def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "ch
             if field in f["meta"]["samples"].keys():
                 meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
                 idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
-        if filterSingle:
+        if remove_sc:
             singleprob = np.where(np.array(f["meta/samples/singlecellprobability"]) < 0.5)[0]
-    if filterSingle:
+    if remove_sc:
         idx = sorted(list(set(idx).intersection(set(singleprob))))
     else:
         idx = sorted(list(set(idx)))
-    counts = index_remote(url, idx)
+    counts = index_remote(url, idx, silent)
     return counts
 
-def rand(file, number, seed=1, filterSingle=False):
+def rand(file, number, seed=1, remove_sc=False, silent=False):
+    """
+    Randomly select a specified number of samples from a file.
+
+    Args:
+        file (str): The file path or object containing the data.
+        number (int): The number of samples to select randomly.
+        seed (int, optional): The seed value for the random number generator. Defaults to 1.
+        remove_sc (bool, optional): Whether to remove single-cell samples from the selection. Defaults to False.
+        silent (bool, optional): Print progress bar.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the randomly selected samples' gene expression data.
+    """
     random.seed(seed)
     if file.startswith("http"):
-        return rand_remote(file, number, filterSingle)
+        return rand_remote(file, number, remove_sc, silent)
     else:
-        return rand_local(file, number, filterSingle)
+        return rand_local(file, number, remove_sc, silent)
 
-def rand_local(file, number, filterSingle):
+def rand_local(file, number, remove_sc, silent=False):
     f = h5.File(file, "r")
     gsm_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
-    if filterSingle:
+    if remove_sc:
         singleprob = np.array(f["meta/samples/singlecellprobability"])
     f.close()
-    if filterSingle:
+    if remove_sc:
         idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(len(gsm_ids)), number))
-    return index(file, idx)
+    return index(file, idx, silent)
 
-def rand_remote(url, number, filterSingle):
+def rand_remote(url, number, remove_sc, silent=False):
     s3_url, endpoint = resolve_url(url)
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
     with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
         number_samples = len(f["meta/samples/geo_accession"])
-        if filterSingle:
+        if remove_sc:
             singleprob = np.array(f["meta/samples/singlecellprobability"])
-    if filterSingle:
+    if remove_sc:
         idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(number_samples), number))
-    return index_remote(url, idx)
+    return index_remote(url, idx, silent)
 
 def series(file, series_id):
+    """
+    Retrieve samples belonging to a specific series from a file.
+
+    Args:
+        file (str): The file path or object containing the data.
+        series_id (str): The ID of the series to retrieve samples from.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the gene expression data for the samples belonging to the specified series.
+    """
     if file.startswith("http"):
         return series_remote(file, series_id)
     else:
         return series_local(file, series_id)
 
-def series_local(file, series_id):
+def series_local(file, series_id, silent=False):
     f = h5.File(file, "r")
     series = [x.decode("UTF-8") for x in np.array(f["meta/samples/series_id"])]
     f.close()
     idx = [i for i,x in enumerate(series) if x == series_id]
     if len(idx) > 0:
-        return index(file, idx)
+        return index(file, idx, silent=silent)
 
-def series_remote(url, series_id):
+def series_remote(url, series_id, silent=False):
     s3_url, endpoint = resolve_url(url)
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
     with h5.File(s3.open(s3_url, 'rb'), 'r', lib_version='latest') as f:
         series = [x.decode("UTF-8") for x in np.array(f["meta/samples/series_id"])]
     idx = [i for i,x in enumerate(series) if x == series_id]
     if len(idx) > 0:
-        return index_remote(url, idx)
+        return index_remote(url, idx, silent)
 
-def samples(file, sample_ids):
+def samples(file, sample_ids, silent=False):
     if file.startswith("http"):
-        return samples_remote(file, sample_ids)
+        return samples_remote(file, sample_ids, silent)
     else:
-        return samples_local(file, sample_ids)
+        return samples_local(file, sample_ids, silent)
 
-def samples_local(file, sample_ids):
+def samples_local(file, sample_ids, silent=False):
     sample_ids = set(sample_ids)
     f = h5.File(file, "r")
     samples = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
     f.close()
     idx = [i for i,x in enumerate(samples) if x in sample_ids]
     if len(idx) > 0:
-        return index(file, idx)
+        return index(file, idx, silent)
 
-def samples_remote(url, sample_ids):
+def samples_remote(url, sample_ids, silent=False):
     sample_ids = set(sample_ids)
     s3_url, endpoint = resolve_url(url)
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
@@ -149,9 +183,21 @@ def samples_remote(url, sample_ids):
         sample_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
     idx = [i for i,x in enumerate(samples) if x in sample_ids]
     if len(idx) > 0:
-        return index_remote(url, idx)
+        return index_remote(url, idx, silent)
 
 def index(file, sample_idx, gene_idx = [], silent=False):
+    """
+    Retrieve gene expression data from a specified file for the given sample and gene indices.
+
+    Args:
+        file (str): The file path or object containing the data.
+        sample_idx (list): A list of sample indices to retrieve expression data for.
+        gene_idx (list, optional): A list of gene indices to retrieve expression data for. Defaults to an empty list (return all).
+        silent (bool, optional): Whether to disable progress bar. Defaults to False.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the gene expression data.
+    """
     sample_idx = sorted(sample_idx)
     gene_idx = sorted(gene_idx)
     row_encoding = get_encoding(file)
@@ -174,7 +220,7 @@ def index(file, sample_idx, gene_idx = [], silent=False):
     exp = pd.DataFrame(exp, index=genes[gene_idx], columns=gsm_ids, dtype=np.uint32)
     return exp
 
-def index_remote(url, sample_idx, gene_idx = []):
+def index_remote(url, sample_idx, gene_idx = [], silent=False):
     if len(sample_idx) == 0:
         return pd.DataFrame(index=genes[gene_idx])
     s3_url, endpoint = resolve_url(url)

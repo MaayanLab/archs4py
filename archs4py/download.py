@@ -13,7 +13,30 @@ def bar_progress(current, total, width=80, update_interval=10):
         sys.stdout.write("\r" + progress_message)
         sys.stdout.flush()
 
-def gene_counts(species, path="", type="GENE_COUNTS", version="latest"):
+def counts(species, path="", type="GENE_COUNTS", version="latest"):
+    """
+    Download count files for a given species and count type.
+
+    Args:
+        species (str): The species for which count files are being downloaded. ["human", "mouse"]
+        path (str, optional): The path where the downloaded file will be saved. Defaults to "".
+        type (str, optional): The type of count file to be downloaded. Defaults to "GENE_COUNTS".
+        version (str, optional): The version of the count file to be downloaded. Defaults to "latest". Versions can be listed with archs4py.versions()
+
+    Returns:
+        str: The path where the count file is downloaded.
+
+    Raises:
+        Exception: If an error occurs during the download process.
+
+    Notes:
+        The function first tries to download the count file using the primary URL specified in the configuration file.
+        If the download fails, it falls back to the fallback URL specified in the configuration file.
+
+        Supported count types:
+        - GENE_COUNTS: Gene-level count files.
+        - TRANSCRIPT_COUNTS: Transcript-level count files.
+    """
     conf = archs4py.utils.get_config()
 
     try:
