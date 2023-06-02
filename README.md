@@ -44,7 +44,7 @@ file = "human_gene_v2.2.h5"
 rand_counts = a4.data.rand(file, 100, remove_sc=True)
 ```
 
-#### Extract samples at specified index position
+#### Extract samples at specified index positions
 ```python
 import archs4py as a4
 
@@ -79,7 +79,7 @@ sample_counts = a4.data.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
 ```python
 
 #get sample counts
-sample_counts = a4.data.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
+sample_counts = a4.data.series(file, ["GSM1158284","GSM1482938","GSM1562817"])
 ```
 
 ### Direct access from S3
