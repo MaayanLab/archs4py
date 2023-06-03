@@ -1,6 +1,7 @@
 <img title="archs4py" alt="archs4py" src="https://github-production-user-asset-6210df.s3.amazonaws.com/32603869/242734021-a99ca725-6f10-4e01-85c1-3c1e1694dc68.png">
 
-![archs4py](https://github.com/MaayanLab/archs4py/assets/32603869/a7607f1a-b04c-47a4-9e6b-d1eee73a337b)
+![archs4py](https://github.com/MaayanLab/archs4py/assets/32603869/c5147d56-fce0-4498-9577-a300df7d6dce)
+
 
 # archs4py - Official Python package to load and query ARCHS4 data
 
