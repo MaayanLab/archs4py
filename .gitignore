@@ -1,1 +1,7 @@
 testing.ipynb
+dist/*
+archs4py.egg*
+pypi_push.sh
+.DS_Store
+example*
+age*
