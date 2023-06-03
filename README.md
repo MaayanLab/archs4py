@@ -65,7 +65,7 @@ pos_counts = a4.data.index(file, [0,1,2,3,4])
 
 #### Extract samples matching search term in meta data
 
-The ARCHS4 H5 file contains all meta data of samples. Using meta data search all matching samples can be extracted with the use of search terms. There is also a `archs4py.meta` module that will only return meta data.
+The ARCHS4 H5 file contains all meta data of samples. Using meta data search all matching samples can be extracted with the use of search terms. There is also a `archs4py.meta` module that will only return meta data. Meta data fields to be returned can be specified `meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]`
 
 ```python
 import archs4py as a4
@@ -105,6 +105,29 @@ file = "human_gene_v2.2.h5"
 
 #get sample counts
 series_counts = a4.data.series(file, "GSE64016")
+
+```
+
+### Meta data
+
+Additinally to the data module archs4py also supports the extraction of meta data. It supports similar endpoints to the `archs4.data` module.
+
+```python
+import archs4py as a4
+
+#path to file
+file = "human_gene_v2.2.h5"
+
+
+
+# get sample meta data based on search term
+meta_meta = a4.meta.meta(file, "myoblast")
+
+# get sample meta data
+sample_meta = a4.meta.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
+
+# get series meta data
+series_meta = a4.meta.series(file, "GSE64016")
 
 ```
 
