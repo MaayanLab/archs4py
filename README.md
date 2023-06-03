@@ -34,6 +34,9 @@ archs4py supports several ways to load gene expression data. When querying ARCHS
 
 
 #### Extract a random set of samples
+
+To extract a random gene expression matrix use the `archs4py.data.rand()` function. The function will return a pandas dataframe with samples as columns and genes as rows.
+
 ```python
 import archs4py as a4
 
@@ -42,9 +45,13 @@ file = "human_gene_v2.2.h5"
 
 # extract 100 random samples and remove sinle cell data
 rand_counts = a4.data.rand(file, 100, remove_sc=True)
+
 ```
 
-#### Extract samples at specified index position
+#### Extract samples at specified index positions
+
+Extract samples based on their index positions in the H5 file.
+
 ```python
 import archs4py as a4
 
@@ -57,6 +64,9 @@ pos_counts = a4.data.index(file, [0,1,2,3,4])
 ```
 
 #### Extract samples matching search term in meta data
+
+The ARCHS4 H5 file contains all meta data of samples. Using meta data search all matching samples can be extracted with the use of search terms. There is also a `archs4py.meta` module that will only return meta data. Meta data fields to be returned can be specified `meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]`
+
 ```python
 import archs4py as a4
 
@@ -68,51 +78,75 @@ meta_counts = a4.data.meta(file, "myoblast", remove_sc=True)
 
 ```
 
-#### Extract samples in a list of GEO accession ids
-```python
+#### Extract samples in a list of GEO accession IDs
 
-#get sample counts
-sample_counts = a4.data.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
-```
-
-#### Extract samples belonging to a GEO series
-```python
-
-#get sample counts
-sample_counts = a4.data.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
-```
-
-### Direct access from S3
-
-Gene expression can be loaded directly from S3 without downloading the complete file. This is very slow and will only work for few samples at a time. Instead of passing a file path pass the URL in S3.
+Samples can directly be downloaded by providing a list of GSM IDs. Samples not contained in ARCHS4 will be ignored.
 
 ```python
 import archs4py as a4
 
 #path to file
-url = "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.2.h5"
+file = "human_gene_v2.2.h5"
 
-# extract 100 random samples
-# filterSingle=True will only retrieve bulk gene expression
-rand_counts = a4.data.rand(url, 100, filterSingle=False)
+#get sample counts
+sample_counts = a4.data.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
+
+```
+
+#### Extract samples belonging to a GEO series
+
+To download all samples of a GEO series for example `GSE64016` use the series function.
+
+```python
+import archs4py as a4
+
+#path to file
+file = "human_gene_v2.2.h5"
+
+#get sample counts
+series_counts = a4.data.series(file, "GSE64016")
+
+```
+
+### Meta data
+
+Additinally to the data module archs4py also supports the extraction of meta data. It supports similar endpoints to the `archs4.data` module. Meta data fields can be specified with: `meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]`
+
+```python
+import archs4py as a4
+
+#path to file
+file = "human_gene_v2.2.h5"
+
+# get sample meta data based on search term
+meta_meta = a4.meta.meta(file, "myoblast", meta_fields=["characteristics_ch1", "source_name_ch1"])
+
+# get sample meta data
+sample_meta = a4.meta.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
+
+# get series meta data
+series_meta = a4.meta.series(file, "GSE64016")
 
 ```
 
 ### Normalizing data
 
-The package also supports simple normalization. Currently supported are quantile normalization, log2 + quantile normalization, and cpm
+The package also supports simple normalization. Currently supported are quantile normalization, log2 + quantile normalization, and cpm. In the example below we load 100 random samples and apply log quantile.
 
 ```python
 import archs4py as a4
 
+file = "human_gene_v2.2.h5"
 rand_counts = a4.data.rand(file, 100)
 
-#normalize using log quantile (method options for now = ["log_quantile", "quantile", "cpm"])
+#normalize using log quantile (method options for now = ["log_quantile", "quantile", "cpm", "tmm"])
 norm_exp = a4.normalize(rand_counts, method="log_quantile")
+
 ```
 
-
 ### List versions
+
+ARCHS4 has different versions to download from. Recommended is the default setting, which will download the latest data release.
 
 ```python
 import archs4 as a4
