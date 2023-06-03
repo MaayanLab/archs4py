@@ -118,10 +118,8 @@ import archs4py as a4
 #path to file
 file = "human_gene_v2.2.h5"
 
-
-
 # get sample meta data based on search term
-meta_meta = a4.meta.meta(file, "myoblast")
+meta_meta = a4.meta.meta(file, "myoblast", meta_fields=["characteristics_ch1", "source_name_ch1"])
 
 # get sample meta data
 sample_meta = a4.meta.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
