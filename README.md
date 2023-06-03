@@ -110,7 +110,7 @@ series_counts = a4.data.series(file, "GSE64016")
 
 ### Meta data
 
-Additinally to the data module archs4py also supports the extraction of meta data. It supports similar endpoints to the `archs4.data` module.
+Additinally to the data module archs4py also supports the extraction of meta data. It supports similar endpoints to the `archs4.data` module. Meta data fields can be specified with: `meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]`
 
 ```python
 import archs4py as a4
