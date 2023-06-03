@@ -13,7 +13,7 @@ ARCHS4 data is regularly updated to include publically available gene expression
 The python package can be directly installed from this GitHub repository using the following command (pip or pip3 depending on system setup)
 
 ```
-pip3 install git+https://github.com/MaayanLab/archs4py.git
+pip3 install archs4py
 ```
 
 ## Usage
