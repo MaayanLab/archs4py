@@ -5,3 +5,4 @@ pypi_push.sh
 .DS_Store
 example*
 age*
+build*

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="archs4py",
-    version="0.1.7",
+    version="0.1.9",
     author="Alexander Lachmann",
     author_email="alexander.lachmann@mssm.edu",
     description="ARCHS4 python package supporting data loading and data queries.",
@@ -22,6 +22,15 @@ setuptools.setup(
         "archs4py": ["data/*"]
     },
     include_package_data=True,
-    install_requires=list(map(str.strip, open('requirements.txt', 'r').readlines())),
+    install_requires=[
+        'h5py==3.8.0',
+        'numpy==1.24.3',
+        'pandas==2.0.2',
+        'qnorm==0.8.1',
+        'setuptools==67.8.0',
+        'tqdm==4.65.0',
+        'wget==3.2',
+        's3fs==2023.5.0',
+    ],
     python_requires='>=3.7',
 )
