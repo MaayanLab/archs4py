@@ -41,7 +41,8 @@ def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characte
         pd.DataFrame: A pandas DataFrame containing the gene expression data for the matching samples.
     """
     search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
-    print("Searches for any occurrence of", search_term, "as regular expression")
+    if not silent:
+        print("Searches for any occurrence of", search_term, "as regular expression")
     if file.startswith("http"):
         return meta_remote(file, search_term, meta_fields, remove_sc, silent)
     else:
@@ -61,7 +62,7 @@ def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "ch
         idx = sorted(list(set(idx).intersection(set(singleprob))))
     else:
         idx = sorted(list(set(idx)))
-    counts = index(file, idx)
+    counts = index(file, idx, silent=silent)
     return counts
 
 def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], remove_sc=False, silent=False):
@@ -112,7 +113,7 @@ def rand_local(file, number, remove_sc, silent=False):
         idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(len(gsm_ids)), number))
-    return index(file, idx, silent)
+    return index(file, idx, silent=silent)
 
 def rand_remote(url, number, remove_sc, silent=False):
     s3_url, endpoint = resolve_url(url)
@@ -125,9 +126,9 @@ def rand_remote(url, number, remove_sc, silent=False):
         idx = sorted(random.sample(list(np.where(singleprob < 0.5)[0]), number))
     else:
         idx = sorted(random.sample(range(number_samples), number))
-    return index_remote(url, idx, silent)
+    return index_remote(url, idx, silent=silent)
 
-def series(file, series_id):
+def series(file, series_id, silent=False):
     """
     Retrieve samples belonging to a specific series from a file.
 
@@ -139,9 +140,9 @@ def series(file, series_id):
         pd.DataFrame: A pandas DataFrame containing the gene expression data for the samples belonging to the specified series.
     """
     if file.startswith("http"):
-        return series_remote(file, series_id)
+        return series_remote(file, series_id, silent=silent)
     else:
-        return series_local(file, series_id)
+        return series_local(file, series_id, silent=silent)
 
 def series_local(file, series_id, silent=False):
     f = h5.File(file, "r")
@@ -162,9 +163,9 @@ def series_remote(url, series_id, silent=False):
 
 def samples(file, sample_ids, silent=False):
     if file.startswith("http"):
-        return samples_remote(file, sample_ids, silent)
+        return samples_remote(file, sample_ids, silent=silent)
     else:
-        return samples_local(file, sample_ids, silent)
+        return samples_local(file, sample_ids, silent=silent)
 
 def samples_local(file, sample_ids, silent=False):
     sample_ids = set(sample_ids)
@@ -173,7 +174,7 @@ def samples_local(file, sample_ids, silent=False):
     f.close()
     idx = [i for i,x in enumerate(samples) if x in sample_ids]
     if len(idx) > 0:
-        return index(file, idx, silent)
+        return index(file, idx, silent=silent)
 
 def samples_remote(url, sample_ids, silent=False):
     sample_ids = set(sample_ids)
@@ -183,7 +184,7 @@ def samples_remote(url, sample_ids, silent=False):
         sample_ids = [x.decode("UTF-8") for x in np.array(f["meta/samples/geo_accession"])]
     idx = [i for i,x in enumerate(samples) if x in sample_ids]
     if len(idx) > 0:
-        return index_remote(url, idx, silent)
+        return index_remote(url, idx, silent=silent)
 
 def index(file, sample_idx, gene_idx = [], silent=False):
     """
@@ -227,7 +228,7 @@ def index_remote(url, sample_idx, gene_idx = [], silent=False):
     sample_idx = sorted(sample_idx)
     gene_idx = sorted(gene_idx)
     s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
-    row_encoding = get_encoding_remote(url)
+    row_encoding = get_encoding_remote(s3, url)
     genes = fetch_meta_remote(row_encoding, s3_url, endpoint)
     if len(gene_idx) == 0:
         gene_idx = np.array(list(range(len(genes))))

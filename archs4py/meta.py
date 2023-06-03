@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import tqdm
 
-def search(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], remove_sc=False, silent=False):
+def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], remove_sc=False, silent=False):
     """
     Search for samples in a file based on a search term in specified metadata fields.
 
@@ -22,7 +22,7 @@ def search(file, search_term, meta_fields=["geo_accession", "series_id", "charac
         silent (bool, optional): Print progress bar.
 
     Returns:
-        pd.DataFrame: A pandas DataFrame containing the matching samples' metadata.
+        pd.DataFrame: DataFrame containing the extracted metadata, with metadata fields as columns and samples as rows.
     """
     search_term = search_term.upper()
     with h5.File(file, "r") as f:
@@ -55,7 +55,7 @@ def samples(file, samples, meta_fields=["geo_accession", "series_id", "character
         silent (bool, optional): If True, disables the progress bar. Defaults to False.
 
     Returns:
-        pandas.DataFrame: DataFrame containing the extracted metadata, with samples as columns and metadata fields as rows.
+        pandas.DataFrame: DataFrame containing the extracted metadata, with metadata fields as columns and samples as rows.
     """
     samples = set(samples)
     with h5.File(file, "r") as f:
@@ -74,6 +74,33 @@ def samples(file, samples, meta_fields=["geo_accession", "series_id", "character
         inter = meta.columns.intersection(set(samples))
     return meta.loc[:,inter].T
 
+def series(file, series, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], silent=False):
+    """
+    Extracts metadata for specified series from an HDF5 file.
+
+    Args:
+        file (str): Path to the HDF5 file.
+        series: Series to extract metadata for.
+        meta_fields (list, optional): List of metadata fields to extract. Defaults to ["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"].
+        silent (bool, optional): If True, disables the progress bar. Defaults to False.
+
+    Returns:
+        pandas.DataFrame: DataFrame containing the extracted metadata, with metadata fields as columns and samples as rows.
+    """
+    with h5.File(file, "r") as f:
+        meta = []
+        mfields = []
+        meta_series = np.array([x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"]["series_id"]))])
+        idx = [i for i,x in enumerate(meta_series) if x == series]
+        for field in tqdm.tqdm(meta_fields, disable=not silent):
+            if field in f["meta"]["samples"].keys():
+                try:
+                    meta.append([x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"][field][idx]))])
+                    mfields.append(field)
+                except Exception:
+                    x=0
+        meta = pd.DataFrame(meta, index=mfields ,columns=[x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"]["geo_accession"][idx]))])
+    return meta.T
 
 def get_meta(file):
     f = h5.File(file, "r")
@@ -94,4 +121,3 @@ def get_meta_gene_field(file, field):
     meta_data = [x.decode("UTF-8") for x in list(np.array(f["meta"]["genes"][field]))]
     f.close()
     return meta_data
-
