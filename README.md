@@ -28,6 +28,17 @@ import archs4py as a4
 file_path = a4.download.counts("human", path="", version="latest")
 ```
 
+### List data fields in H5
+
+The H5 files contain data and meta data information. To list the contents of ARCHS4 H5 files use the built in `ls` function.
+
+```
+import archs4py as a4
+
+file = "human_gene_v2.2.h5"
+a4.ls(file)
+```
+
 ### Data access
 
 archs4py supports several ways to load gene expression data. When querying ARCHS4 be aware that when loading too many samples the system might run out of memory. (e.g. the meta data search term is very broad). In most cases loading several thousand samples at the same time should be no problem. To find relevant samples there are 5 main functions in the `archs4py.data` module. A function to extract N random samples `archs4py.data.rand()`, a function to extract samples by index `archs4py.data.index()`, a function to extract samples based on meta data search `archs4py.data.meta()`, a function to extract samples based on a list of geo accessions `archs4py.data.samples()` and lastly a function to extract all samples belonging to a series `archs4.data.series()`.
