@@ -32,7 +32,7 @@ file_path = a4.download.counts("human", path="", version="latest")
 
 The H5 files contain data and meta data information. To list the contents of ARCHS4 H5 files use the built in `ls` function.
 
-```
+```python
 import archs4py as a4
 
 file = "human_gene_v2.2.h5"
