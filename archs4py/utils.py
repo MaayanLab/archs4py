@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from scipy import stats
+import h5py as h5
 
 import os
 import json
@@ -79,3 +79,34 @@ def trimmed_mean(matrix, percentage):
         trimmed_mean = np.mean(trimmed_values)
         trimmed_means.append(trimmed_mean)
     return trimmed_means
+
+
+def ls(file):
+    """
+    List all meta data groups and meta data fields in the specified H5 file.
+
+    Args:
+        file: H5 input file
+    """
+    def print_data(name, obj, prefix):
+        if isinstance(obj, h5.Dataset):
+            data_type = str(obj.dtype)
+            if data_type == "object":
+                data_type = "str"
+            shape = obj.shape
+            print("{}{:<20}  {:<6} | {}".format(prefix, name, data_type, shape))
+        else:
+            print("{}{:<26}".format(prefix, name))
+            
+        for key, val in obj.attrs.items():
+            print("{}   {:<11} : {}".format(prefix, key, val))
+
+    with h5.File(file, 'r') as f:
+        for name in f:
+            print_data(name, f[name], "")
+            if isinstance(f[name], h5.Group):
+                for sub_name in f[name]:
+                    print_data(sub_name, f[name][sub_name], "│ ")
+                    if isinstance(f[name][sub_name], h5.Group):
+                        for sub_sub_name in f[name][sub_name]:
+                            print_data(sub_sub_name, f[name][sub_name][sub_sub_name], "│   ")
