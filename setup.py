@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="archs4py",
-    version="0.2.2",
+    version="0.2.4",
     author="Alexander Lachmann",
     author_email="alexander.lachmann@mssm.edu",
     description="ARCHS4 python package supporting data loading and data queries.",
@@ -31,7 +31,6 @@ setuptools.setup(
         'tqdm==4.65.0',
         'wget==3.2',
         's3fs==2023.5.0',
-        'xalign==0.1.73',
         'biomart==0.9.2',
         'xalign==0.1.74'
 
