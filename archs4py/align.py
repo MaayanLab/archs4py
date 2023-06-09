@@ -54,7 +54,6 @@ def aggregate(transcript_count, species, release, identifier):
         trans.index = gm.loc[trans.index, "symbol"]
     return trans
 
-
 def get_ensembl_mappings(species, release):  
     server = biomart.BiomartServer(conf["ALIGNMENT"][str(release)]["biomart"])
     if species == "mus_musculus":
@@ -78,3 +77,7 @@ def get_ensembl_mappings(species, release):
     gene_map.columns = ["ensembl_transcript", "symbol", "ensembl_gene", "biotype"]
     gene_map = gene_map[~gene_map.index.duplicated(keep='first')]
     return gene_map
+
+def load(sras, outfolder):
+    xalign.sra.load_sras(sras, outfolder)
+    print("download complete")

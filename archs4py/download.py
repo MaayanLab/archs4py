@@ -1,8 +1,9 @@
 import wget
 import sys
 import requests
-from tqdm import tqdm
 import archs4py.utils
+import requests
+import os
 
 def bar_progress(current, total, width=80, update_interval=10):
     current_gb = current / (1024**3)  # Convert current bytes to GB
@@ -39,6 +40,14 @@ def counts(species, path="", type="GENE_COUNTS", version="latest"):
     """
     conf = archs4py.utils.get_config()
 
+    try:
+        file_name = os.path.basename(conf[type][species.upper()][version]["primary"])
+        download_url = conf["DOWNLOAD_URL"]
+        url = f"{download_url}?&file={file_name}&version=1337"
+        response = requests.get(url)
+    except:
+        x = "just continue"
+    
     try:
         fpath = wget.download(conf[type][species.upper()][version]["primary"], out=path, bar=bar_progress)
         print("file downloaded to", fpath)

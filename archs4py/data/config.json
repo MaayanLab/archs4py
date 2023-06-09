@@ -68,5 +68,6 @@
             "release": 107,
             "biomart": "http://jul2022.archive.ensembl.org/biomart"
         }
-    }
+    },
+    "DOWNLOAD_URL": "https://maayanlab.cloud/archs4/search/downloadcounter.php"
 }
