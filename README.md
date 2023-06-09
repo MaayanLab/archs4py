@@ -4,6 +4,8 @@
 
 Official ARCHS4 compagnion package. This package is a wrapper for basic H5 commands performed on the ARCHS4 data files. Some of the data access is optimized for specific query strategies and should make this implementation faster than manually querying the data. The package supports automated file download, mutithreading, and some convenience functions such as data normalization.
 
+ARCHS4py also supports the ARCHS4 alignment pipeline. When aligning FASTQ files using ARCHS4py gene and transcript counts will be compatible with the preprocessed ARCHS4 samples.
+
 ## ARCHS4 data
 
 ARCHS4 data is regularly updated to include publically available gene expression samples from RNA-seq. ARCHS4 processes the major platforms for human and mouse. As of 6/2023 ARCHS4 encompasses more than 1.5 million RNA-seq samples. All samples in ARCHS4 are homogeniously processed. ARCHS4 does currently not decern whether samples are bulk or single-cell and purely crawls GEO. Since samples are not always correctly annotated as single cell ARCHS4 uses a machine learning approach to predict single-cell samples and associated a singlecellprobability to each sample. Samples with a value larger than 0.5 can be removed from the queries if needed.
@@ -152,6 +154,50 @@ rand_counts = a4.data.rand(file, 100)
 
 #normalize using log quantile (method options for now = ["log_quantile", "quantile", "cpm", "tmm"])
 norm_exp = a4.normalize(rand_counts, method="log_quantile")
+
+```
+
+### Sequence alignment
+
+The `align` module contains a replication of the ARCHS4 alignment pipeline. When used on FASTQ files the resulting gene or transcript counts are compatible with the previously aligned samples in ARCHS4. The package is highly automated and only required a path to a FASTQ file or a folder containing multiple FASTQ files. All file dependencies will downloaded automatically and index will be built when needed.
+
+### Align FASTQ file
+
+Pass either a single or paired FASTQ file. This function can return transcript count, gene counts, or transcript level TPM data.
+
+```python
+
+import archs4py as a4
+
+a4.align.load(["SRR14457464"], "data/example_1")
+
+result = a4.align.fastq("human", "data/example_1/SRR14457464.fastq", return_type="gene", identifier="symbol")
+
+```
+
+The next example is a SRR file that extracts into a pair of paired end FASTQ files. They can be passed to ARCHS4py like this:
+
+```python
+import xalign
+
+# the sample is paired-end and will result in two files (SRR15972519_1.fastq, SRR15972519_2.fastq)
+a4.align.load(["SRR15972519"], "data/example_2")
+
+result = a4.align.fastq("homo_sapiens", ["data/example_2/SRR15972519_1.fastq", "data/example_2/SRR15972519_2.fastq"], return_type="transcript")
+
+```
+
+### Align FASTQ files from folder
+
+Align all FASTQ files in folder. ARCHS4py will automatically matching samples if data is paired end.
+
+```python
+
+import archs4py as a4
+
+a4.align.load(["SRR15972519", "SRR15972520", "SRR15972521"], "data/example_3")
+
+result = a4.align.fastq("mouse", "data/example_3", return_type="gene", identifier="symbol")
 
 ```
 
