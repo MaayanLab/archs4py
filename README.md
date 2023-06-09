@@ -189,7 +189,7 @@ import archs4py as a4
 # the sample is paired-end and will result in two files (SRR15972519_1.fastq, SRR15972519_2.fastq)
 a4.align.load(["SRR15972519"], "data/example_2")
 
-result = a4.align.fastq("homo_sapiens", ["data/example_2/SRR15972519_1.fastq", "data/example_2/SRR15972519_2.fastq"], return_type="transcript")
+result = a4.align.fastq("mouse", ["data/example_2/SRR15972519_1.fastq", "data/example_2/SRR15972519_2.fastq"], return_type="transcript")
 
 ```
 
