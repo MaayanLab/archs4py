@@ -6,15 +6,13 @@ Official ARCHS4 compagnion package. This package is a wrapper for basic H5 comma
 
 ARCHS4py also supports the ARCHS4 alignment pipeline. When aligning FASTQ files using ARCHS4py gene and transcript counts will be compatible with the preprocessed ARCHS4 samples.
 
-[Installation](#installation) | [Download H5 Files](#downloadh5) | [List H5 Contents](#list) | [Extract Counts](#extract-counts) | [Extract Meta Data](#extract-meta) | [Normalize Samples](#normalize) | [FASTQ Alignment](#align) | [Versions](#version)
+[Installation](#installation) | [Download H5 Files](#usage) | [List H5 Contents](#list-data-fields-in-h5) | [Extract Counts](#data-access) | [Extract Meta Data](#meta-data) | [Normalize Samples](#normalizing-data) | [FASTQ Alignment](#sequence-alignment) | [Versions](#list-versions)
 
 ## ARCHS4 data
 
 ARCHS4 data is regularly updated to include publically available gene expression samples from RNA-seq. ARCHS4 processes the major platforms for human and mouse. As of 6/2023 ARCHS4 encompasses more than 1.5 million RNA-seq samples. All samples in ARCHS4 are homogeniously processed. ARCHS4 does currently not decern whether samples are bulk or single-cell and purely crawls GEO. Since samples are not always correctly annotated as single cell ARCHS4 uses a machine learning approach to predict single-cell samples and associated a singlecellprobability to each sample. Samples with a value larger than 0.5 can be removed from the queries if needed.
 
 ## Installation
-
-<span id="#installation"></span>
 
 The python package can be directly installed from this GitHub repository using the following command (pip or pip3 depending on system setup)
 
@@ -23,8 +21,6 @@ pip3 install archs4py
 ```
 
 ## Usage
-
-<span id="#downloadh5"></span>
 
 ### Download data file
 
@@ -38,8 +34,6 @@ file_path = a4.download.counts("human", path="", version="latest")
 ```
 
 ## List data fields in H5
-
-<span id="#list"></span>
 
 The H5 files contain data and meta data information. To list the contents of ARCHS4 H5 files use the built in `ls` function.
 
