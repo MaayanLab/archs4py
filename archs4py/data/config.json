@@ -58,5 +58,15 @@
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_transcript_v2.2.h5"
             }
         }
+    },
+    "ALIGNMENT": {
+        "latest":{
+            "release": 107,
+            "biomart": "http://jul2022.archive.ensembl.org/biomart"
+        },
+        "2.2":{
+            "release": 107,
+            "biomart": "http://jul2022.archive.ensembl.org/biomart"
+        }
     }
 }

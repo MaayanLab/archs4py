@@ -6,3 +6,4 @@ setuptools==67.8.0
 tqdm==4.65.0
 wget==3.2
 s3fs==2023.5.0
+xalign==0.1.73

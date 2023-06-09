@@ -15,7 +15,6 @@ def get_config():
         data = json.load(json_file)
     return(data)
 
-
 def versions():
     """
     Get the available versions of human gene counts.

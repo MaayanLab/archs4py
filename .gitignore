@@ -6,3 +6,4 @@ pypi_push.sh
 example*
 age*
 build*
+*.parquet

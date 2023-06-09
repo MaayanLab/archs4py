@@ -1,0 +1,12 @@
+recursive-include archs4py
+
+recursive-exclude data
+recursive-exclude archs4py.egg-info
+recursive-exclude .ipynb_checkpoints
+
+global-exclude *.pkl
+global-exclude *.tsv
+global-exclude *.zip
+global-exclude *.parquet
+global-exclude *push.sh
+global-exclude *testing.ipynb
