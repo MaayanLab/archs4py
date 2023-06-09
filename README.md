@@ -8,7 +8,6 @@ ARCHS4py also supports the ARCHS4 alignment pipeline. When aligning FASTQ files 
 
 [Installation](#installation) | [Download H5 Files](#downloadh5) | [List H5 Contents](#list) | [Extract Counts](#extract-counts) | [Extract Meta Data](#extract-meta) | [Normalize Samples](#normalize) | [FASTQ Alignment](#align) | [Versions](#version)
 
-
 ## ARCHS4 data
 
 ARCHS4 data is regularly updated to include publically available gene expression samples from RNA-seq. ARCHS4 processes the major platforms for human and mouse. As of 6/2023 ARCHS4 encompasses more than 1.5 million RNA-seq samples. All samples in ARCHS4 are homogeniously processed. ARCHS4 does currently not decern whether samples are bulk or single-cell and purely crawls GEO. Since samples are not always correctly annotated as single cell ARCHS4 uses a machine learning approach to predict single-cell samples and associated a singlecellprobability to each sample. Samples with a value larger than 0.5 can be removed from the queries if needed.
