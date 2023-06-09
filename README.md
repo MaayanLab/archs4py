@@ -184,7 +184,7 @@ result = a4.align.fastq("human", "data/example_1/SRR14457464.fastq", return_type
 The next example is a SRR file that extracts into a pair of paired end FASTQ files. They can be passed to ARCHS4py like this:
 
 ```python
-import xalign
+import archs4py as a4
 
 # the sample is paired-end and will result in two files (SRR15972519_1.fastq, SRR15972519_2.fastq)
 a4.align.load(["SRR15972519"], "data/example_2")
