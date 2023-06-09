@@ -217,3 +217,14 @@ import archs4 as a4
 print(a4.versions())
 
 ```
+
+# Citation
+
+When using ARCHS4 please cite the following reference:
+
+Lachmann, Alexander, Denis Torre, Alexandra B. Keenan, Kathleen M. Jagodnik, Hoyjin J. Lee, Lily Wang, Moshe C. Silverstein, and Avi Ma’ayan. "Massive mining of publicly available RNA-seq data from human and mouse." Nature communications 9, no. 1 (2018): 1366.
+https://www.nature.com/articles/s41467-018-03751-6
+
+
+
+
