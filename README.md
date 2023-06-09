@@ -6,12 +6,15 @@ Official ARCHS4 compagnion package. This package is a wrapper for basic H5 comma
 
 ARCHS4py also supports the ARCHS4 alignment pipeline. When aligning FASTQ files using ARCHS4py gene and transcript counts will be compatible with the preprocessed ARCHS4 samples.
 
+[Installation](#installation) | [Download H5 Files](#downloadh5) | [List H5 Contents](#list) | [Extract Counts](#extract-counts) | [Extract Meta Data](#extract-meta) | [Normalize Samples](#normalize) | [FASTQ Alignment](#align) | [Versions](#version)
+
+
 ## ARCHS4 data
 
 ARCHS4 data is regularly updated to include publically available gene expression samples from RNA-seq. ARCHS4 processes the major platforms for human and mouse. As of 6/2023 ARCHS4 encompasses more than 1.5 million RNA-seq samples. All samples in ARCHS4 are homogeniously processed. ARCHS4 does currently not decern whether samples are bulk or single-cell and purely crawls GEO. Since samples are not always correctly annotated as single cell ARCHS4 uses a machine learning approach to predict single-cell samples and associated a singlecellprobability to each sample. Samples with a value larger than 0.5 can be removed from the queries if needed.
 
 ## Installation
-
+<span id="#installation"></span>
 The python package can be directly installed from this GitHub repository using the following command (pip or pip3 depending on system setup)
 
 ```
@@ -21,7 +24,7 @@ pip3 install archs4py
 ## Usage
 
 ### Download data file
-
+<span id="#downloadh5"></span>
 The data is stored in large HDF5 files which first need to be downloaded. HDF5 stores matrix information in a compressed datastructure that allows efficient data access to slices of the data. There are separate files for `human` and `mouse` data. The supported files are `gene counts` and `transcript counts`. As of 6/2023 the files are larger than 30GB and depending on the network speed will take some time to download.
 
 ```python
@@ -31,7 +34,7 @@ file_path = a4.download.counts("human", path="", version="latest")
 ```
 
 ### List data fields in H5
-
+<span id="#list"></span>
 The H5 files contain data and meta data information. To list the contents of ARCHS4 H5 files use the built in `ls` function.
 
 ```python
@@ -45,7 +48,7 @@ a4.ls(file)
 
 archs4py supports several ways to load gene expression data. When querying ARCHS4 be aware that when loading too many samples the system might run out of memory. (e.g. the meta data search term is very broad). In most cases loading several thousand samples at the same time should be no problem. To find relevant samples there are 5 main functions in the `archs4py.data` module. A function to extract N random samples `archs4py.data.rand()`, a function to extract samples by index `archs4py.data.index()`, a function to extract samples based on meta data search `archs4py.data.meta()`, a function to extract samples based on a list of geo accessions `archs4py.data.samples()` and lastly a function to extract all samples belonging to a series `archs4.data.series()`.
 
-
+<span id="#extract-counts"></span>
 #### Extract a random set of samples
 
 To extract a random gene expression matrix use the `archs4py.data.rand()` function. The function will return a pandas dataframe with samples as columns and genes as rows.
@@ -122,7 +125,7 @@ series_counts = a4.data.series(file, "GSE64016")
 ```
 
 ### Meta data
-
+<span id="#extract-meta"></span>
 Additinally to the data module archs4py also supports the extraction of meta data. It supports similar endpoints to the `archs4.data` module. Meta data fields can be specified with: `meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]`
 
 ```python
@@ -143,7 +146,7 @@ series_meta = a4.meta.series(file, "GSE64016")
 ```
 
 ### Normalizing data
-
+<span id="#normalize"></span>
 The package also supports simple normalization. Currently supported are quantile normalization, log2 + quantile normalization, and cpm. In the example below we load 100 random samples and apply log quantile.
 
 ```python
@@ -158,7 +161,7 @@ norm_exp = a4.normalize(rand_counts, method="log_quantile")
 ```
 
 ### Sequence alignment
-
+<span id="#align"></span>
 The `align` module contains a replication of the ARCHS4 alignment pipeline. When used on FASTQ files the resulting gene or transcript counts are compatible with the previously aligned samples in ARCHS4. The package is highly automated and only required a path to a FASTQ file or a folder containing multiple FASTQ files. All file dependencies will downloaded automatically and index will be built when needed.
 
 ### Align FASTQ file
@@ -202,7 +205,7 @@ result = a4.align.fastq("mouse", "data/example_3", return_type="gene", identifie
 ```
 
 ### List versions
-
+<span id="#version"></span>
 ARCHS4 has different versions to download from. Recommended is the default setting, which will download the latest data release.
 
 ```python
