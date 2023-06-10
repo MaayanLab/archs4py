@@ -37,9 +37,6 @@ def folder(species, folder, return_type="transcript", release="latest", overwrit
     else:
         return aggregate(transcript_count, species, release, identifier)
 
-def download(sra_ids, folder):
-    xalign.sra.load_sras(sra_ids, folder)
-
 def aggregate(transcript_count, species, release, identifier):
     if gene_mapping[species] is None:
         gene_mapping[species] = get_ensembl_mappings(species, release)
