@@ -195,7 +195,7 @@ result = a4.align.fastq("mouse", ["data/example_2/SRR15972519_1.fastq", "data/ex
 
 ### Align FASTQ files from folder
 
-Align all FASTQ files in folder. ARCHS4py will automatically matching samples if data is paired end.
+Align all FASTQ files in folder using the function `a4.align.folder()`. ARCHS4py will automatically matching samples if data is paired end.
 
 ```python
 
@@ -203,7 +203,7 @@ import archs4py as a4
 
 a4.align.load(["SRR15972519", "SRR15972520", "SRR15972521"], "data/example_3")
 
-result = a4.align.fastq("mouse", "data/example_3", return_type="gene", identifier="symbol")
+result = a4.align.folder("mouse", "data/example_3", return_type="gene", identifier="symbol")
 
 ```
 
