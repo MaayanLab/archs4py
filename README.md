@@ -2,7 +2,7 @@
 
 # archs4py - Official Python package to load and query ARCHS4 data
 
-Official ARCHS4 compagnion package. This package is a wrapper for basic H5 commands performed on the ARCHS4 data files. Some of the data access is optimized for specific query strategies and should make this implementation faster than manually querying the data. The package supports automated file download, mutithreading, and some convenience functions such as data normalization.
+Official ARCHS4 companion package. This package is a wrapper for basic H5 commands performed on the ARCHS4 data files. Some of the data access is optimized for specific query strategies and should make this implementation faster than manually querying the data. The package supports automated file download, mutithreading, and some convenience functions such as data normalization.
 
 ARCHS4py also supports the ARCHS4 alignment pipeline. When aligning FASTQ files using ARCHS4py gene and transcript counts will be compatible with the preprocessed ARCHS4 samples.
 
