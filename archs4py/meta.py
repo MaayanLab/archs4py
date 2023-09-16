@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import tqdm
 
-def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], remove_sc=False, silent=False):
+def meta(file, search_term, meta_fields=["characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], remove_sc=False, silent=False):
     """
     Search for samples in a file based on a search term in specified metadata fields.
 
@@ -42,6 +42,8 @@ def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characte
         if remove_sc:
             singleprob = np.where(np.array(f["meta/samples/singlecellprobability"]) < 0.5)[0]
             idx = sorted(list(set(idx).intersection(set(singleprob))))
+        else:
+            idx = sorted(list(set(idx)))
     return meta.iloc[:,idx].T
 
 def samples(file, samples, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], silent=False):

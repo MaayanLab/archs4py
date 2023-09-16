@@ -50,8 +50,7 @@ def normalize(counts, method="log_quantile", tmm_outlier=0.05):
     elif method == "log_quantile":
         norm_exp = qnorm.quantile_normalize(np.log2(1+np.array(counts)))
     elif method == "cpm":
-        g = np.array(counts)
-        norm_exp = np.abs(g/g.sum(axis=0))*1_000_000
+        norm_exp = cpm_normalization(counts)
     elif method == "tmm":
         norm_exp = tmm_norm(counts, tmm_outlier)
     else:
@@ -79,6 +78,11 @@ def trimmed_mean(matrix, percentage):
         trimmed_means.append(trimmed_mean)
     return trimmed_means
 
+def cpm_normalization(df):
+    sample_sum = df.sum(axis=0)
+    scaling_factor = sample_sum / 1e6
+    normalized_df = df / scaling_factor
+    return normalized_df
 
 def ls(file):
     """
