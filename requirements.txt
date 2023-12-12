@@ -7,4 +7,3 @@ tqdm
 wget
 s3fs
 xalign
-archs4p
