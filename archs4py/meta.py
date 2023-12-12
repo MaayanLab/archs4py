@@ -46,6 +46,31 @@ def meta(file, search_term, meta_fields=["characteristics_ch1", "extract_protoco
             idx = sorted(list(set(idx)))
     return meta.iloc[:,idx].T
 
+def field(file, field):
+    gene_meta = []
+    transcript_meta = []
+    with h5.File(file, 'r') as f:
+        sample_meta = list(f["meta/samples"])
+    try:
+        with h5.File(file, 'r') as f:
+            gene_meta = list(f["meta/genes"])
+    except Exception:
+        x = 0
+    try:
+        with h5.File(file, 'r') as f:
+            transcript_meta = list(f["meta/transcripts"])
+    except Exception:
+        x = 0
+    with h5.File(file, 'r') as f:
+        if field in sample_meta:
+            return [x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"][field]))]
+        elif field in gene_meta:
+            return [x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["genes"][field]))]
+        elif field in transcript_meta:
+            return [x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["transcripts"][field]))]
+        else:
+            raise("specified field does not exist. Choose from supported sample meta fields or gene meta fields. List fields ysing archs4py.ls(filename) function")
+
 def samples(file, samples, meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"], silent=False):
     """
     Extracts metadata for specified samples from an HDF5 file.
