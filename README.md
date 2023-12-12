@@ -146,6 +146,9 @@ sample_meta = a4.meta.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
 # get series meta data
 series_meta = a4.meta.series(file, "GSE64016")
 
+# get all entries of a meta data field for all samples. In this example get all sample ids and gene symbols in H5 file
+all_samples = a4.meta.field(file, "geo_accession")
+all_symbols = a4.meta.field(file, "symbol")
 ```
 
 ## Normalizing data
