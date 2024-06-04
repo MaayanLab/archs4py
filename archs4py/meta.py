@@ -63,7 +63,10 @@ def field(file, field):
         x = 0
     with h5.File(file, 'r') as f:
         if field in sample_meta:
-            return [x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"][field]))]
+            try:
+                return [x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"][field]))]
+            except Exception:
+                return list(np.array(f["meta"]["samples"][field]))
         elif field in gene_meta:
             return [x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["genes"][field]))]
         elif field in transcript_meta:
@@ -96,7 +99,8 @@ def samples(file, samples, meta_fields=["geo_accession", "series_id", "character
                     meta.append([x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"][field][idx]))])
                     mfields.append(field)
                 except Exception:
-                    x=0
+                    meta.append(list(np.array(f["meta"]["samples"][field][idx])))
+                    mfields.append(field)
         meta = pd.DataFrame(meta, index=mfields ,columns=[x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"]["geo_accession"][idx]))])
         inter = meta.columns.intersection(set(samples))
     return meta.loc[:,inter].T
@@ -125,26 +129,31 @@ def series(file, series, meta_fields=["geo_accession", "series_id", "characteris
                     meta.append([x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"][field][idx]))])
                     mfields.append(field)
                 except Exception:
-                    x=0
+                    meta.append(list(np.array(f["meta"]["samples"][field][idx])))
+                    mfields.append(field)
         meta = pd.DataFrame(meta, index=mfields ,columns=[x.decode("UTF-8").upper() for x in list(np.array(f["meta"]["samples"]["geo_accession"][idx]))])
     return meta.T
 
 def get_meta(file):
-    f = h5.File(file, "r")
-    meta = {}
-    for field in list(f["meta"]["samples"].keys()):
-        meta[field] = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
-    f.close()
+    with h5.File(file, "r") as f:
+        meta = {}
+        for field in list(f["meta"]["samples"].keys()):
+            try:
+                meta[field] = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
+            except Exception:
+                meta[field] = list(np.array(f["meta"]["samples"][field]))
+        f.close()
     return meta
 
 def get_meta_sample_field(file, field):
-    f = h5.File(file, "r")
-    meta_data = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
-    f.close()
-    return meta_data
+    with h5.File(file, "r") as f:
+        try:
+            meta_data = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
+        except Exception:
+            meta_data = list(np.array(f["meta"]["samples"][field]))
+        return meta_data
 
 def get_meta_gene_field(file, field):
-    f = h5.File(file, "r")
-    meta_data = [x.decode("UTF-8") for x in list(np.array(f["meta"]["genes"][field]))]
-    f.close()
+    with h5.File(file, "r") as f:
+        meta_data = [x.decode("UTF-8") for x in list(np.array(f["meta"]["genes"][field]))]
     return meta_data
