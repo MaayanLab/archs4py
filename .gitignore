@@ -8,3 +8,5 @@ age*
 build*
 *.parquet
 *.csv
+setup_old.py
+test/*
