@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import h5py as h5
+import random
 
 import os
 import json
@@ -113,3 +114,28 @@ def ls(file):
                     if isinstance(f[name][sub_name], h5.Group):
                         for sub_sub_name in f[name][sub_name]:
                             print_data(sub_sub_name, f[name][sub_name][sub_sub_name], "│   ")
+
+def aggregate_duplicate_genes(exp):
+    return exp.groupby(exp.index).sum()
+
+def filter_genes(exp, readThreshold: int=20, sampleThreshold: float=0.02, deterministic: bool=True, aggregate=True):
+    '''
+    Returns filtered genes with sufficient read support
+        Parameters:
+                h5file          (string): path to expression h5 file
+                readThreshold      (int): minimum number of reads required for gene filtering
+                sampleThreshold  (float): fraction of samples required with read count larger than _readThreshold
+                filterSamples      (int): number of samples used to identify genes for clustering
+
+        Returns:
+                (List[int]): filtered index of genes passing criteria
+    '''
+    if deterministic:
+        random.seed(42)
+
+    if aggregate:
+        exp = aggregate_duplicate_genes(exp)
+
+    kk = exp[exp > readThreshold].count(axis=1)
+    ii = [idx for idx, val in enumerate(kk) if val >= exp.shape[1]*sampleThreshold]
+    return exp.iloc[ii,:]
