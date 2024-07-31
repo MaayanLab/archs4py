@@ -176,7 +176,7 @@ import archs4py as a4
 file = "human_gene_v2.2.h5"
 rand_counts = a4.data.rand(file, 100)
 
-# filter genes with low expression
+# aggregate duplicate genes
 filtered_exp = a4.utils.filter_genes(exp, readThreshold=50, sampleThreshold: float=0.02, deterministic: bool=True, aggregate=True)
 ```
 
