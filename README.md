@@ -6,7 +6,7 @@ Official ARCHS4 companion package. This package is a wrapper for basic H5 comman
 
 ARCHS4py also supports the ARCHS4 alignment pipeline. When aligning FASTQ files using ARCHS4py gene and transcript counts will be compatible with the preprocessed ARCHS4 samples.
 
-[Installation](#installation) | [Download H5 Files](#usage) | [List H5 Contents](#list-data-fields-in-h5) | [Extract Counts](#data-access) | [Extract Meta Data](#meta-data) | [Normalize Samples](#normalizing-data) | [Filter Genes](#filter-genes) | [Aggregate Duplicate Genes](#aggregate-genes) | [FASTQ Alignment](#sequence-alignment) | [Versions](#list-versions)
+[Installation](#installation) | [Download H5 Files](#usage) | [List H5 Contents](#list-data-fields-in-h5) | [Extract Counts](#data-access) | [Extract Meta Data](#meta-data) | [Normalize Samples](#normalizing-data) | [Filter Genes](#filter-genes-with-low-expression) | [Aggregate Duplicate Genes](#aggregate-genes) | [FASTQ Alignment](#sequence-alignment) | [Versions](#list-versions)
 
 ## ARCHS4 data
 
