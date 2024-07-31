@@ -6,7 +6,7 @@ Official ARCHS4 companion package. This package is a wrapper for basic H5 comman
 
 ARCHS4py also supports the ARCHS4 alignment pipeline. When aligning FASTQ files using ARCHS4py gene and transcript counts will be compatible with the preprocessed ARCHS4 samples.
 
-[Installation](#installation) | [Download H5 Files](#usage) | [List H5 Contents](#list-data-fields-in-h5) | [Extract Counts](#data-access) | [Extract Meta Data](#meta-data) | [Normalize Samples](#normalizing-data) | [FASTQ Alignment](#sequence-alignment) | [Versions](#list-versions)
+[Installation](#installation) | [Download H5 Files](#usage) | [List H5 Contents](#list-data-fields-in-h5) | [Extract Counts](#data-access) | [Extract Meta Data](#meta-data) | [Normalize Samples](#normalizing-data) | [Filter Genes](#filter-genes) | [Aggregate Duplicate Genes](#aggregate-genes) | [FASTQ Alignment](#sequence-alignment) | [Versions](#list-versions)
 
 ## ARCHS4 data
 
@@ -167,7 +167,7 @@ norm_exp = a4.normalize(rand_counts, method="log_quantile")
 ```
 
 ## Filter genes with low expression
-<span id="#filter_genes"></span>
+<span id="#filter-genes"></span>
 To filter genes with low expression use the `utils.filter()` function. It uses two parameters to determine which genes to filter. `readThreshold` and `sampleThreshold`. In the example below genes are removed that don't have at least 50 reads in 2% of samples. `aggregate` will also deal with duplicate gene symbols in the ARCHS4 data and aggregate the counts.
 
 ```python
@@ -181,7 +181,7 @@ filtered_exp = a4.utils.filter_genes(exp, readThreshold=50, sampleThreshold: flo
 ```
 
 ## Aggregate duplicate genes
-<span id="#aggregate_genes"></span>
+<span id="#aggregate-genes"></span>
 Some gene symbols are duplicated, which is an artifact from the Ensembl gene annotation. The transcript sequences are often identical and reads are split between the different entries. The `utils.aggregate_duplicate_genes()` function will sum all counts of duplicate gene symbols and eliminate duplicate entries.
 
 ```python
