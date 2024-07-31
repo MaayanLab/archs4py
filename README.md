@@ -166,6 +166,35 @@ norm_exp = a4.normalize(rand_counts, method="log_quantile")
 
 ```
 
+## Filter genes with low expression
+<span id="#filter_genes"></span>
+To filter genes with low expression use the `utils.filter()` function. It uses two parameters to determine which genes to filter. `readThreshold` and `sampleThreshold`. In the example below genes are removed that don't have at least 50 reads in 2% of samples. `aggregate` will also deal with duplicate gene symbols in the ARCHS4 data and aggregate the counts.
+
+```python
+import archs4py as a4
+
+file = "human_gene_v2.2.h5"
+rand_counts = a4.data.rand(file, 100)
+
+# filter genes with low expression
+filtered_exp = a4.utils.filter_genes(exp, readThreshold=50, sampleThreshold: float=0.02, deterministic: bool=True, aggregate=True)
+```
+
+## Aggregate duplicate genes
+<span id="#aggregate_genes"></span>
+Some gene symbols are duplicated, which is an artifact from the Ensembl gene annotation. The transcript sequences are often identical and reads are split between the different entries. The `utils.aggregate_duplicate_genes()` function will sum all counts of duplicate gene symbols and eliminate duplicate entries.
+
+```python
+import archs4py as a4
+
+file = "human_gene_v2.2.h5"
+rand_counts = a4.data.rand(file, 100)
+
+# filter genes with low expression
+agg_exp = a4.utils.aggregate_duplicate_genes(rand_counts)
+
+```
+
 ## Sequence alignment
 <span id="#align"></span>
 The `align` module contains a replication of the ARCHS4 alignment pipeline. When used on FASTQ files the resulting gene or transcript counts are compatible with the previously aligned samples in ARCHS4. The package is highly automated and only required a path to a FASTQ file or a folder containing multiple FASTQ files. All file dependencies will downloaded automatically and index will be built when needed.
