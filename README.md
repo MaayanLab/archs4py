@@ -82,7 +82,7 @@ pos_counts = a4.data.index(file, [0,1,2,3,4])
 
 #### Extract samples matching search term in meta data
 
-The ARCHS4 H5 file contains all meta data of samples. Using meta data search all matching samples can be extracted with the use of search terms. There is also a `archs4py.meta` module that will only return meta data. Meta data fields to be returned can be specified `meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]`
+The ARCHS4 H5 file contains all meta data of samples. Using meta data search all matching samples can be extracted with the use of search terms. There is also an `archs4py.meta` module that will only return meta data. Meta data fields to be returned can be specified `meta_fields=["geo_accession", "series_id", "characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title"]`
 
 ```python
 import archs4py as a4
@@ -167,7 +167,9 @@ norm_exp = a4.normalize(rand_counts, method="log_quantile")
 ```
 
 ## Filter genes with low expression
+
 <span id="#filter-genes"></span>
+
 To filter genes with low expression use the `utils.filter()` function. It uses two parameters to determine which genes to filter. `readThreshold` and `sampleThreshold`. In the example below genes are removed that don't have at least 50 reads in 2% of samples. `aggregate` will also deal with duplicate gene symbols in the ARCHS4 data and aggregate the counts.
 
 ```python
@@ -181,7 +183,9 @@ filtered_exp = a4.utils.filter_genes(exp, readThreshold=50, sampleThreshold: flo
 ```
 
 ## Aggregate duplicate genes
+
 <span id="#aggregate-genes"></span>
+
 Some gene symbols are duplicated, which is an artifact from the Ensembl gene annotation. The transcript sequences are often identical and reads are split between the different entries. The `utils.aggregate_duplicate_genes()` function will sum all counts of duplicate gene symbols and eliminate duplicate entries.
 
 ```python
@@ -196,7 +200,9 @@ agg_exp = a4.utils.aggregate_duplicate_genes(rand_counts)
 ```
 
 ## Sequence alignment
+
 <span id="#align"></span>
+
 The `align` module contains a replication of the ARCHS4 alignment pipeline. When used on FASTQ files the resulting gene or transcript counts are compatible with the previously aligned samples in ARCHS4. The package is highly automated and only required a path to a FASTQ file or a folder containing multiple FASTQ files. All file dependencies will downloaded automatically and index will be built when needed.
 
 ### Align FASTQ file
