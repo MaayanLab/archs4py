@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="archs4py",
-    version="0.2.18",
+    version="0.2.19",
     author="Alexander Lachmann",
     author_email="alexander.lachmann@mssm.edu",
-    description="ARCHS4 python package supporting data loading and data queries.",
+    description="ARCHS4 Python package supporting data loading and data queries.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/maayanlab/archs4py",
