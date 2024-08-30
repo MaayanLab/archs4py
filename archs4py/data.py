@@ -279,7 +279,7 @@ def get_encoding_remote(s3, s3_url):
             elif "symbol" in list(f["meta/genes"].keys()):
                 return "meta/gene_symbol"
         elif "transcripts" in list(f["meta"].keys()):
-            if "ensembl_id" in list(f["meta/trancripts"].keys()):
-                return "meta/trancripts/ensembl_id"
+            if "ensembl_id" in list(f["meta/transcripts"].keys()):
+                return "meta/transcripts/ensembl_id"
         else:
             raise Exception("error in gene/transcript meta data")
