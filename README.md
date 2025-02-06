@@ -35,18 +35,18 @@ file_path = a4.download.counts("human", path="", version="latest")
 
 ## List data fields in H5
 
-The H5 files contain data and meta data information. To list the contents of ARCHS4 H5 files use the built in `ls` function.
+The H5 files contain data and metadata information. To list the contents of ARCHS4 H5 files use the built in `ls` function.
 
 ```python
 import archs4py as a4
 
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 a4.ls(file)
 ```
 
 ## Data access
 
-archs4py supports several ways to load gene expression data. When querying ARCHS4 be aware that when loading too many samples the system might run out of memory. (e.g. the meta data search term is very broad). In most cases loading several thousand samples at the same time should be no problem. To find relevant samples there are 5 main functions in the `archs4py.data` module. A function to extract N random samples `archs4py.data.rand()`, a function to extract samples by index `archs4py.data.index()`, a function to extract samples based on meta data search `archs4py.data.meta()`, a function to extract samples based on a list of geo accessions `archs4py.data.samples()` and lastly a function to extract all samples belonging to a series `archs4.data.series()`.
+archs4py supports several ways to load gene expression data. When querying ARCHS4 be aware that when loading too many samples the system might run out of memory. (e.g. the metadata search term is very broad). In most cases loading several thousand samples simultaneously should be no problem. To find relevant samples there are 5 main functions in the `archs4py.data` module. A function to extract N random samples `archs4py.data.rand()`, a function to extract samples by index `archs4py.data.index()`, a function to extract samples based on metadata search `archs4py.data.meta()`, a function to extract samples based on a list of geo accessions `archs4py.data.samples()` and lastly a function to extract all samples belonging to a series `archs4.data.series()`.
 
 <span id="#extract-counts"></span>
 
@@ -58,9 +58,9 @@ To extract a random gene expression matrix use the `archs4py.data.rand()` functi
 import archs4py as a4
 
 #path to file
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 
-# extract 100 random samples and remove sinle cell data
+# extract 100 random samples and remove single cell data
 rand_counts = a4.data.rand(file, 100, remove_sc=True)
 
 ```
@@ -73,7 +73,7 @@ Extract samples based on their index positions in the H5 file.
 import archs4py as a4
 
 #path to file
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 
 # get counts for samples at position [0,1,2,3,4]
 pos_counts = a4.data.index(file, [0,1,2,3,4])
@@ -88,7 +88,7 @@ The ARCHS4 H5 file contains all meta data of samples. Using meta data search all
 import archs4py as a4
 
 #path to file
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 
 # search and extract samples matching regex (ignores whitespaces)
 meta_counts = a4.data.meta(file, "myoblast", remove_sc=True)
@@ -103,7 +103,7 @@ Samples can directly be downloaded by providing a list of GSM IDs. Samples not c
 import archs4py as a4
 
 #path to file
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 
 #get sample counts
 sample_counts = a4.data.samples(file, ["GSM1158284","GSM1482938","GSM1562817"])
@@ -118,7 +118,7 @@ To download all samples of a GEO series for example `GSE64016` use the series fu
 import archs4py as a4
 
 #path to file
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 
 #get sample counts
 series_counts = a4.data.series(file, "GSE64016")
@@ -135,7 +135,7 @@ Additinally to the data module archs4py also supports the extraction of meta dat
 import archs4py as a4
 
 #path to file
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 
 # get sample meta data based on search term
 meta_meta = a4.meta.meta(file, "myoblast", meta_fields=["characteristics_ch1", "source_name_ch1"])
@@ -158,7 +158,7 @@ The package also supports simple normalization. Currently supported are quantile
 ```python
 import archs4py as a4
 
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 rand_counts = a4.data.rand(file, 100)
 
 #normalize using log quantile (method options for now = ["log_quantile", "quantile", "cpm", "tmm"])
@@ -175,7 +175,7 @@ To filter genes with low expression use the `utils.filter()` function. It uses t
 ```python
 import archs4py as a4
 
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 rand_counts = a4.data.rand(file, 100)
 
 # aggregate duplicate genes
@@ -191,7 +191,7 @@ Some gene symbols are duplicated, which is an artifact from the Ensembl gene ann
 ```python
 import archs4py as a4
 
-file = "human_gene_v2.4.h5"
+file = "human_gene_v2.6.h5"
 rand_counts = a4.data.rand(file, 100)
 
 # filter genes with low expression
