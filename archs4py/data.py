@@ -40,7 +40,7 @@ def meta(file, search_term, meta_fields=["geo_accession", "series_id", "characte
     Returns:
         pd.DataFrame: A pandas DataFrame containing the gene expression data for the matching samples.
     """
-    search_term = re.sub(r"_|-|'|/| |\.", "", search_term.upper())
+    #search_term = re.ssub(r"_|-|'|/| |\.", "", search_term.upper())
     if not silent:
         print("Searches for any occurrence of", search_term, "as regular expression")
     if file.startswith("http"):
@@ -54,7 +54,8 @@ def meta_local(file, search_term, meta_fields=["geo_accession", "series_id", "ch
     for field in meta_fields:
         if field in f["meta"]["samples"].keys():
             meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
-            idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
+            #idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
+            idx.extend([i for i, item in enumerate(meta) if re.search(search_term, item, re.IGNORECASE)])
     if remove_sc:
         singleprob = np.where(np.array(f["meta/samples/singlecellprobability"]) < 0.5)[0]
     f.close()
@@ -73,7 +74,8 @@ def meta_remote(url, search_term, meta_fields=["geo_accession", "series_id", "ch
         for field in meta_fields:
             if field in f["meta"]["samples"].keys():
                 meta = [x.decode("UTF-8") for x in list(np.array(f["meta"]["samples"][field]))]
-                idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
+                #idx.extend([i for i, item in enumerate(meta) if re.search(search_term, re.sub(r"_|-|'|/| |\.", "", item.upper()))])
+                idx.extend([i for i, item in enumerate(meta) if re.search(search_term, item, re.IGNORECASE)])
         if remove_sc:
             singleprob = np.where(np.array(f["meta/samples/singlecellprobability"]) < 0.5)[0]
     if remove_sc:
