@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="archs4py",
-    version="1.0.1",
+    version="1.1.0",
     author="Alexander Lachmann",
     author_email="alexander.lachmann@mssm.edu",
     description="ARCHS4 Python package supporting data loading and data queries.",
@@ -35,5 +35,5 @@ setuptools.setup(
         'xalign'
 
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.8',
 )

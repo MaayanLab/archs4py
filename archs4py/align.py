@@ -9,12 +9,12 @@ gene_mapping = {}
 gene_mapping["homo_sapiens"] = None
 gene_mapping["mus_musculus"] = None
 
-def fastq(species, fastq, release="latest", t=8, overwrite=False, return_type="transcript", identifier="symbol"):
+def fastq(species, fastq, release="latest", t=8, overwrite=False, return_type="transcript", identifier="symbol", aligner: xalign.Aligner = "kallisto"):
     if species == "mouse":
         species = "mus_musculus"
     elif species == "human":
         species = "homo_sapiens"
-    result = xalign.align_fastq(species, fastq, release=conf["ALIGNMENT"][str(release)]["release"], t=t, noncoding=True, overwrite=overwrite)
+    result = xalign.align_fastq(species, fastq, aligner=aligner, release=conf["ALIGNMENT"][str(release)]["release"], t=t, noncoding=True, overwrite=overwrite)
     result.set_index("transcript", inplace=True)
     result.index = [x.split(".")[0] for x in result.index]
     if return_type == "gene":
@@ -24,13 +24,13 @@ def fastq(species, fastq, release="latest", t=8, overwrite=False, return_type="t
     else:
         return result.loc[:,"reads"]
 
-def folder(species, folder, return_type="transcript", release="latest", overwrite=False, t=8, identifier="symbol"):
+def folder(species, folder, return_type="transcript", release="latest", overwrite=False, t=8, identifier="symbol", aligner: xalign.Aligner = "kallisto"):
     if species == "mouse":
         species = "mus_musculus"
     elif species == "human":
         species = "homo_sapiens"
     
-    gene_count, transcript_count = xalign.align_folder(species, folder, release=conf["ALIGNMENT"][str(release)]["release"], t=t, noncoding=True, overwrite=overwrite)
+    gene_count, transcript_count = xalign.align_folder(species, folder, aligner=aligner, release=conf["ALIGNMENT"][str(release)]["release"], t=t, noncoding=True, overwrite=overwrite)
     del gene_count
     if return_type == "transcript":
         return transcript_count
