@@ -2,27 +2,27 @@
     "GENE_COUNTS":{
         "HUMAN": {
             "latest": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.latest.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/human_gene_v2.latest.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/human_gene_v2.latest.h5"
             },
             "2.5": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.5.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/human_gene_v2.5.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/human_gene_v2.5.h5"
             },
             "2.4": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.4.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/human_gene_v2.4.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/human_gene_v2.4.h5"
             },
             "2.3": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.3.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/human_gene_v2.3.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/human_gene_v2.3.h5"
             },
             "2.2": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/human_gene_v2.2.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/human_gene_v2.2.h5"
             },
             "2.1.2": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_human_v2.1.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/archs4_gene_human_v2.1.2.h5",
                 "falback": "https://s3.amazonaws.com/mssm-data/archs4_gene_human_v2.1.2.h5"
             },
             "1.11": {
@@ -32,27 +32,27 @@
         },
         "MOUSE": {
             "latest": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/mouse_gene_v2.latest.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/mouse_gene_v2.latest.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_gene_v2.latest.h5"
             },
             "2.5": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/mouse_gene_v2.5.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/mouse_gene_v2.5.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_gene_v2.5.h5"
             },
             "2.4": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/mouse_gene_v2.4.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/mouse_gene_v2.4.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_gene_v2.4.h5"
             },
             "2.3": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/mouse_gene_v2.3.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/mouse_gene_v2.3.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_gene_v2.3.h5"
             },
             "2.2": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/mouse_gene_v2.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/mouse_gene_v2.2.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_gene_v2.2.h5"
             },
             "2.1.2": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/archs4_gene_mouse_v2.1.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/archs4_gene_mouse_v2.1.2.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/archs4_gene_mouse_v2.1.2.h5"
             },
             "1.11": {
@@ -64,21 +64,21 @@
     "TRANSCRIPT_COUNTS": {
         "HUMAN": {
             "latest": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/human_gene_v2.2.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/human_gene_v2.2.h5"
             },
             "2.2": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/human_gene_v2.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/human_gene_v2.2.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/human_gene_v2.2.h5"
             }
         },
         "MOUSE": {
             "latest": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/mouse_transcript_v2.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/mouse_transcript_v2.2.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_transcript_v2.2.h5"
             },
             "2.2": {
-                "primary": "https://s3.dev.maayanlab.cloud/archs4/files/mouse_transcript_v2.2.h5",
+                "primary": "https://s3.k8s.maayanlab.cloud/archs4/files/mouse_transcript_v2.2.h5",
                 "fallback": "https://s3.amazonaws.com/mssm-data/mouse_transcript_v2.2.h5"
             }
         }
